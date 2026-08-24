@@ -203,7 +203,6 @@ export const searchVehicle = (params) => USE_MOCK ? searchMock(params) : searchR
 // ─── LOKASI E-SAMSAT ACEH ───────────────────────────────────────────────────
 const MOCK_LOCATIONS = [
   { type: 'STATIC', nama: 'Samsat Induk Banda Aceh', alamat: 'Jl. T. Nyak Arief No. 12, Banda Aceh', latitude: 5.5501, longitude: 95.3192 },
-  { type: 'STATIC', nama: 'MPP Pasar Aceh', alamat: 'Jl. Diponegoro No. 1, Banda Aceh', latitude: 5.5532, longitude: 95.3175 },
   { type: 'STATIC', nama: 'Samsat Induk Lhokseumawe', alamat: 'Jl. Merdeka No. 45, Lhokseumawe', latitude: 5.1801, longitude: 97.1507 },
   
   { type: 'MOBILE', nama: 'Samsat Keliling Banda Aceh 1', hariOperasi: 'Senin - Kamis', jadwalOperasi: '08:30 - 14:00 WIB', tempatOperasi: 'Lapangan Blang Padang' },
@@ -211,7 +210,11 @@ const MOCK_LOCATIONS = [
   { type: 'MOBILE', nama: 'Samsat Keliling Lhokseumawe', hariOperasi: 'Selasa - Rabu', jadwalOperasi: '09:00 - 13:00 WIB', tempatOperasi: 'Terminal Lhokseumawe' },
 
   { type: 'MOBILE', nama: 'Samsat Jempol Banda Aceh', hariOperasi: 'Sabtu - Minggu', jadwalOperasi: '16:00 - 21:00 WIB', tempatOperasi: 'Taman Bustanussalatin (Taman Sari)' },
-  { type: 'MOBILE', nama: 'Samsat Jempol Langsa', hariOperasi: 'Sabtu', jadwalOperasi: '15:00 - 20:00 WIB', tempatOperasi: 'Alun-alun Kota Langsa' }
+  { type: 'MOBILE', nama: 'Samsat Jempol Langsa', hariOperasi: 'Sabtu', jadwalOperasi: '15:00 - 20:00 WIB', tempatOperasi: 'Alun-alun Kota Langsa' },
+
+  { type: 'MPP', nama: 'MPP Pasar Aceh Lantai 3', alamat: 'Jl. Diponegoro No. 1', kota: 'Banda Aceh' },
+  { type: 'MPP', nama: 'MPP Kota Lhokseumawe', alamat: 'Jl. Merdeka No. 45', kota: 'Lhokseumawe' },
+  { type: 'MPP', nama: 'MPP Kota Langsa', alamat: 'Jl. Jend. Sudirman No. 12', kota: 'Langsa' }
 ];
 
 export const getSamsatLocations = async () => {

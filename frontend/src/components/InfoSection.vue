@@ -13,6 +13,8 @@ import { MapPin, Calendar, HelpCircle, Mail, Car, Building } from '@lucide/vue'
 import { INFORMASI_LAYANAN } from '../data/mockData'
 import { getSamsatLocations } from '../services/vehicleApi'
 
+
+
 /** @prop {string} type - Menentukan konten yang ditampilkan ('informasi' untuk layanan, lainnya untuk FAQ) */
 const props = defineProps({
   type: { type: String, default: 'informasi' }
@@ -41,6 +43,8 @@ watch(() => props.type, (newType) => {
 const filteredLocations = computed(() => {
   if (activeFilter.value === 'Samsat Induk') {
     return locations.value.filter(loc => loc.type === 'STATIC')
+  } else if (activeFilter.value === 'MPP') {
+    return locations.value.filter(loc => loc.type === 'MPP')
   } else if (activeFilter.value === 'Samsat Jempol') {
     return locations.value.filter(loc => loc.type === 'MOBILE' && loc.nama.toLowerCase().includes('jempol'))
   } else {
@@ -49,7 +53,7 @@ const filteredLocations = computed(() => {
   }
 })
 
-const filters = ['Samsat Keliling', 'Samsat Jempol', 'Samsat Induk']
+const filters = ['Samsat Keliling', 'Samsat Jempol', 'Samsat Induk', 'MPP']
 </script>
 
 <template>
@@ -60,7 +64,7 @@ const filters = ['Samsat Keliling', 'Samsat Jempol', 'Samsat Induk']
           Informasi Layanan e-Samsat Aceh
         </h2>
         <p style="opacity: 0.9; font-size: 0.95rem; max-width: 650px; margin: 0 auto">
-          Lokasi layanan Samsat Keliling, Samsat Jempol, dan Samsat Induk di wilayah Provinsi Aceh.
+          Lokasi layanan Samsat Keliling, Samsat Jempol, Samsat Induk, dan Mall Pelayanan Publik (MPP) di wilayah Provinsi Aceh.
         </p>
       </div>
 
@@ -117,6 +121,23 @@ const filters = ['Samsat Keliling', 'Samsat Jempol', 'Samsat Induk']
           </div>
         </template>
 
+        <!-- Card untuk MPP (Mall Pelayanan Publik) -->
+        <template v-else-if="activeFilter === 'MPP'">
+          <div 
+            v-for="(item, idx) in filteredLocations" 
+            :key="idx" 
+            style="background: #ffffff; border-radius: 16px; padding: 1.5rem; color: #1e293b; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 0.75rem;"
+          >
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #00b4b6; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.75rem;">
+              <Building :size="20" />
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin: 0">{{ item.nama }}</h3>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: #475569; margin-top: 0.25rem;">
+              <MapPin :size="16" style="flex-shrink: 0; margin-top: 2px" />
+              <span>{{ item.alamat }}{{ item.kota ? ', ' + item.kota : '' }}</span>
+            </div>
+          </div>
+        </template>
         <!-- Card untuk Static (Induk) -->
         <template v-else>
           <div 
