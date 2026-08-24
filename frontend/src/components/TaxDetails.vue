@@ -200,6 +200,12 @@ const isPaid = computed(() => props.vehicle?.status === 'LUNAS')
           Generate Kode Pembayaran
         </button>
       </template>
+      <template v-else>
+        <button class="btn-secondary" style="width: 100%; cursor: not-allowed; opacity: 0.8; background-color: #f1f5f9; color: #16a34a; border: 1px solid #16a34a; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.85rem; border-radius: 12px; font-weight: 600;" disabled>
+          <CheckCircle2 :size="20" />
+          Telah Lunas
+        </button>
+      </template>
     </div>
   </div>
 </template>

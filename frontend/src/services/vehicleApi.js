@@ -199,3 +199,37 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
  * @returns {Promise<VehicleResult>}
  */
 export const searchVehicle = (params) => USE_MOCK ? searchMock(params) : searchReal(params)
+
+// ─── LOKASI E-SAMSAT ACEH ───────────────────────────────────────────────────
+const MOCK_LOCATIONS = [
+  { type: 'STATIC', nama: 'Samsat Induk Banda Aceh', alamat: 'Jl. T. Nyak Arief No. 12, Banda Aceh', latitude: 5.5501, longitude: 95.3192 },
+  { type: 'STATIC', nama: 'MPP Pasar Aceh', alamat: 'Jl. Diponegoro No. 1, Banda Aceh', latitude: 5.5532, longitude: 95.3175 },
+  { type: 'STATIC', nama: 'Samsat Induk Lhokseumawe', alamat: 'Jl. Merdeka No. 45, Lhokseumawe', latitude: 5.1801, longitude: 97.1507 },
+  
+  { type: 'MOBILE', nama: 'Samsat Keliling Banda Aceh 1', hariOperasi: 'Senin - Kamis', jadwalOperasi: '08:30 - 14:00 WIB', tempatOperasi: 'Lapangan Blang Padang' },
+  { type: 'MOBILE', nama: 'Samsat Keliling Banda Aceh 2', hariOperasi: 'Jumat', jadwalOperasi: '08:30 - 11:30 WIB', tempatOperasi: 'Masjid Raya Baiturrahman' },
+  { type: 'MOBILE', nama: 'Samsat Keliling Lhokseumawe', hariOperasi: 'Selasa - Rabu', jadwalOperasi: '09:00 - 13:00 WIB', tempatOperasi: 'Terminal Lhokseumawe' },
+
+  { type: 'MOBILE', nama: 'Samsat Jempol Banda Aceh', hariOperasi: 'Sabtu - Minggu', jadwalOperasi: '16:00 - 21:00 WIB', tempatOperasi: 'Taman Bustanussalatin (Taman Sari)' },
+  { type: 'MOBILE', nama: 'Samsat Jempol Langsa', hariOperasi: 'Sabtu', jadwalOperasi: '15:00 - 20:00 WIB', tempatOperasi: 'Alun-alun Kota Langsa' }
+];
+
+export const getSamsatLocations = async () => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 800)); // Simulasi loading
+    return {
+      success: true,
+      message: 'Berhasil mengambil data lokasi',
+      data: MOCK_LOCATIONS
+    }
+  } else {
+    try {
+      const response = await fetch(API_BASE_URL + '/samsat-locations')
+      if (!response.ok) throw new Error('HTTP ' + response.status)
+      return await response.json() // Asumsi struktur { success, message, data: [] }
+    } catch (err) {
+      console.error('[getSamsatLocations]', err)
+      return { success: false, message: 'Gagal menghubungi server.', data: [] }
+    }
+  }
+}

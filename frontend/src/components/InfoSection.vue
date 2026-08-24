@@ -8,13 +8,48 @@
   @props type {string} - Jenis konten: 'informasi' atau 'bantuan'
 -->
 <script setup>
-import { MapPin, Calendar, HelpCircle, Mail } from '@lucide/vue'
+import { ref, onMounted, computed, watch } from 'vue'
+import { MapPin, Calendar, HelpCircle, Mail, Car, Building } from '@lucide/vue'
 import { INFORMASI_LAYANAN } from '../data/mockData'
+import { getSamsatLocations } from '../services/vehicleApi'
 
 /** @prop {string} type - Menentukan konten yang ditampilkan ('informasi' untuk layanan, lainnya untuk FAQ) */
-defineProps({
+const props = defineProps({
   type: { type: String, default: 'informasi' }
 })
+
+const locations = ref([])
+const isLoading = ref(false)
+const activeFilter = ref('Samsat Keliling') // 'Samsat Keliling', 'Samsat Jempol', 'Samsat Induk'
+
+const fetchLocations = async () => {
+  if (locations.value.length > 0) return // Cache data
+  isLoading.value = true
+  const res = await getSamsatLocations()
+  if (res.success) {
+    locations.value = res.data
+  }
+  isLoading.value = false
+}
+
+watch(() => props.type, (newType) => {
+  if (newType === 'informasi') {
+    fetchLocations()
+  }
+}, { immediate: true })
+
+const filteredLocations = computed(() => {
+  if (activeFilter.value === 'Samsat Induk') {
+    return locations.value.filter(loc => loc.type === 'STATIC')
+  } else if (activeFilter.value === 'Samsat Jempol') {
+    return locations.value.filter(loc => loc.type === 'MOBILE' && loc.nama.toLowerCase().includes('jempol'))
+  } else {
+    // Default: Samsat Keliling (Mobile tapi bukan Jempol)
+    return locations.value.filter(loc => loc.type === 'MOBILE' && !loc.nama.toLowerCase().includes('jempol'))
+  }
+})
+
+const filters = ['Samsat Keliling', 'Samsat Jempol', 'Samsat Induk']
 </script>
 
 <template>
@@ -25,49 +60,84 @@ defineProps({
           Informasi Layanan e-Samsat Aceh
         </h2>
         <p style="opacity: 0.9; font-size: 0.95rem; max-width: 650px; margin: 0 auto">
-          Lokasi layanan Samsat Keliling, Mall Pelayanan Publik (MPP), dan ketentuan pengesahan STNK di wilayah Provinsi Aceh.
+          Lokasi layanan Samsat Keliling, Samsat Jempol, dan Samsat Induk di wilayah Provinsi Aceh.
         </p>
       </div>
 
-      <div class="info-section-grid">
-        <div style="background: #ffffff; border-radius: 20px; padding: 1.75rem; color: #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.1)">
-          <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1.25rem; color: #00b4b6">
-            <Calendar :size="24" />
-            <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a">
-              Jadwal Samsat Keliling Aceh
-            </h3>
-          </div>
+      <div style="display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap;">
+        <button 
+          v-for="filter in filters" 
+          :key="filter"
+          @click="activeFilter = filter"
+          :style="{
+            padding: '0.6rem 1.25rem',
+            borderRadius: '20px',
+            border: 'none',
+            cursor: 'pointer',
+            fontWeight: '600',
+            fontSize: '0.9rem',
+            transition: 'all 0.3s ease',
+            backgroundColor: activeFilter === filter ? '#38bdf8' : 'rgba(255,255,255,0.1)',
+            color: activeFilter === filter ? '#0f172a' : '#ffffff',
+            boxShadow: activeFilter === filter ? '0 4px 12px rgba(56, 189, 248, 0.4)' : 'none'
+          }"
+        >
+          {{ filter }}
+        </button>
+      </div>
 
-          <div style="display: flex; flex-direction: column; gap: 1rem">
-            <div v-for="(item, idx) in INFORMASI_LAYANAN.samsatKeliling" :key="idx" style="padding: 0.85rem; background: #f8fafc; border-radius: 12px; border-left: 4px solid #00b4b6">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem">
-                <strong style="font-size: 0.85rem; color: #0f172a">{{ item.hari }}</strong>
-                <span style="font-size: 0.75rem; color: #00b4b6; font-weight: 700">{{ item.jam }}</span>
-              </div>
-              <div style="font-size: 0.8rem; color: #64748b; display: flex; align-items: center; gap: 0.35rem">
-                <MapPin :size="14" />
-                <span>{{ item.lokasi }}</span>
+      <div v-if="isLoading" style="text-align: center; padding: 3rem 0;">
+        <div class="spinner-ring" style="margin: 0 auto 1rem; width: 40px; height: 40px; display: inline-block; position: relative;"></div>
+        <p style="color: #94a3b8">Memuat data lokasi...</p>
+      </div>
+
+      <div v-else style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto;">
+        <!-- Card untuk Mobile (Keliling / Jempol) -->
+        <template v-if="activeFilter === 'Samsat Keliling' || activeFilter === 'Samsat Jempol'">
+          <div 
+            v-for="(item, idx) in filteredLocations" 
+            :key="idx" 
+            style="background: #ffffff; border-radius: 16px; padding: 1.5rem; color: #1e293b; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 0.75rem;"
+          >
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #00b4b6; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.75rem;">
+              <Car :size="20" />
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin: 0">{{ item.nama }}</h3>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: #475569; margin-top: 0.25rem;">
+              <Calendar :size="16" style="flex-shrink: 0; margin-top: 2px" />
+              <div>
+                <strong style="color: #0f172a">{{ item.hariOperasi }}</strong><br/>
+                <span>{{ item.jadwalOperasi }}</span>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div style="background: #ffffff; border-radius: 20px; padding: 1.75rem; color: #1e293b; box-shadow: 0 10px 25px rgba(0,0,0,0.1)">
-          <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1.25rem; color: #00b4b6">
-            <MapPin :size="24" />
-            <h3 style="font-size: 1.1rem; font-weight: 800; color: #0f172a">
-              Mall Pelayanan Publik (MPP)
-            </h3>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 1rem">
-            <div v-for="(item, idx) in INFORMASI_LAYANAN.mppLocations" :key="idx" style="padding: 0.85rem; background: #f8fafc; border-radius: 12px">
-              <strong style="font-size: 0.85rem; color: #0f172a; display: block; margin-bottom: 0.2rem">
-                {{ item.nama }} ({{ item.kota }})
-              </strong>
-              <span style="font-size: 0.78rem; color: #64748b">{{ item.alamat }}</span>
+            <div style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: #475569;">
+              <MapPin :size="16" style="flex-shrink: 0; margin-top: 2px" />
+              <span>{{ item.tempatOperasi }}</span>
             </div>
           </div>
+        </template>
+
+        <!-- Card untuk Static (Induk) -->
+        <template v-else>
+          <div 
+            v-for="(item, idx) in filteredLocations" 
+            :key="idx" 
+            style="background: #ffffff; border-radius: 16px; padding: 1.5rem; color: #1e293b; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 0.75rem;"
+          >
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: #00b4b6; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.75rem;">
+              <Building :size="20" />
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin: 0">{{ item.nama }}</h3>
+            </div>
+            <div style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.85rem; color: #475569; margin-top: 0.25rem;">
+              <MapPin :size="16" style="flex-shrink: 0; margin-top: 2px" />
+              <span>{{ item.alamat }}</span>
+            </div>
+          </div>
+        </template>
+
+        <div v-if="filteredLocations.length === 0" style="grid-column: 1 / -1; text-align: center; padding: 3rem 0; color: #94a3b8;">
+          <MapPin :size="48" style="opacity: 0.3; margin: 0 auto 1rem;" />
+          <p>Belum ada data untuk kategori ini.</p>
         </div>
       </div>
     </div>

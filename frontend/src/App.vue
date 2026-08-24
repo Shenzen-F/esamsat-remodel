@@ -240,20 +240,10 @@ const handleSearch = async () => {
 
   if (paidRecord) {
     currentVehicle.value = paidRecord.vehicle
-    paymentSuccessData.value = {
-      vehicle: paidRecord.vehicle,
-      totalPajak: paidRecord.totalPajak,
-      kodeBayar: paidRecord.kodeBayar
-    }
-    triggerToast('Kendaraan ini sudah dibayar. Berikut bukti pembayarannya.')
+    triggerToast('Kendaraan ini sudah dibayar.')
   } else if (foundVehicle.status === 'LUNAS') {
     currentVehicle.value = foundVehicle
-    paymentSuccessData.value = {
-      vehicle: foundVehicle,
-      totalPajak: result.totalPajak,
-      kodeBayar: (foundVehicle.riwayat && foundVehicle.riwayat[0]) ? foundVehicle.riwayat[0].kodeBayar : ''
-    }
-    triggerToast('Kendaraan ini sudah dibayar. Berikut bukti pembayarannya.')
+    triggerToast('Kendaraan ini sudah dibayar.')
   } else if (searchedRecord) {
     currentVehicle.value = searchedRecord.vehicle
     paymentSuccessData.value = {
@@ -391,7 +381,12 @@ const onBackToHome = () => {
         </div>
       </Transition>
 
-      <Navbar :active-tab="activeTab" @set-tab="activeTab = $event" @go-to-landing="showLanding = true" />
+      <Navbar 
+        :active-tab="activeTab" 
+        :hide-menu="!!paymentSuccessData"
+        @set-tab="activeTab = $event" 
+        @go-to-landing="showLanding = true" 
+      />
 
       <main class="main-content">
         <Transition name="tab-fade" mode="out-in">

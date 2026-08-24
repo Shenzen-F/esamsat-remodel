@@ -12,7 +12,8 @@ import sekretariatLogo from '../assets/sekretariat samsat.png'
 
 /** @prop {string} activeTab - Nama tab yang sedang aktif untuk highlight navigasi */
 defineProps({
-  activeTab: { type: String, default: 'beranda' }
+  activeTab: { type: String, default: 'beranda' },
+  hideMenu: { type: Boolean, default: false }
 })
 
 /**
@@ -35,7 +36,7 @@ const emit = defineEmits(['set-tab', 'go-to-landing'])
       <span>e-Samsat Aceh</span>
     </div>
 
-    <ul class="nav-links">
+    <ul v-if="!hideMenu" class="nav-links">
       <li
         :class="['nav-link', { active: activeTab === 'beranda' || activeTab === 'cek-pajak' }]"
         @click="emit('set-tab', 'beranda')"
