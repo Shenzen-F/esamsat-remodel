@@ -209,11 +209,8 @@ const handleSearch = async () => {
 
   const hasInvalid = Object.values(formErrors).some((msg) => msg !== '')
   if (hasInvalid) {
-    triggerToast('Periksa kembali isian Anda: NIK harus 16 digit, Nomor Polisi 1–4 angka (tidak diawali 0) dan 1–4 huruf (opsional), serta No. Rangka 5 karakter.')
     return
   }
-
-  isSearching.value = true
 
   const result = await searchVehicle({
     nik: nikInput,
@@ -222,10 +219,7 @@ const handleSearch = async () => {
     noRangkaLast5
   })
 
-  isSearching.value = false
-
   if (result.status === 'error') {
-    triggerToast(result.message)
     return
   }
 
@@ -240,10 +234,8 @@ const handleSearch = async () => {
 
   if (paidRecord) {
     currentVehicle.value = paidRecord.vehicle
-    triggerToast('Kendaraan ini sudah dibayar.')
   } else if (foundVehicle.status === 'LUNAS') {
     currentVehicle.value = foundVehicle
-    triggerToast('Kendaraan ini sudah dibayar.')
   } else if (searchedRecord) {
     currentVehicle.value = searchedRecord.vehicle
     paymentSuccessData.value = {
@@ -251,7 +243,6 @@ const handleSearch = async () => {
       totalPajak: searchedRecord.totalPajak,
       kodeBayar: searchedRecord.kodeBayar
     }
-    triggerToast('Data ini sudah pernah dicari. Berikut bukti pembayarannya.')
   } else {
     currentVehicle.value = foundVehicle
     searchedVehicles[searchKey] = {
@@ -260,16 +251,20 @@ const handleSearch = async () => {
       kodeBayar: '982' + Math.floor(100000001 + Math.random() * 899999999)
     }
     localStorage.setItem(SEARCHED_KEY, JSON.stringify(searchedVehicles))
-    triggerToast(result.message)
-    nextTick(() => {
-      setTimeout(() => {
-        if (resultsRef.value) {
-          const targetY = resultsRef.value.getBoundingClientRect().top + window.scrollY - 20
-          smoothScrollTo(targetY, 900)
-        }
-      }, 150)
-    })
   }
+
+  nextTick(() => {
+    setTimeout(() => {
+      // Jika hasil pencarian aktif (TaxDetails ditampilkan)
+      if (resultsRef.value) {
+        const targetY = resultsRef.value.getBoundingClientRect().top + window.scrollY - 20
+        smoothScrollTo(targetY, 900)
+      } else {
+        // Jika PaymentSuccess ditampilkan, scroll ke atas atau bisa disesuaikan
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }, 150)
+  })
 }
 
 /**
@@ -288,7 +283,6 @@ const handleReset = () => {
   formErrors.nopolSeri = ''
   formErrors.noRangkaLast5 = ''
   currentVehicle.value = null
-  triggerToast('Form pencarian telah dibersihkan.')
 }
 
 /**
@@ -357,30 +351,6 @@ const onBackToHome = () => {
     <LandingPage v-if="showLanding" key="landing" @enter-app="showLanding = false" />
 
     <div v-else key="main" class="app-container">
-      <!-- Toast Notification dengan animasi slide-in -->
-      <Transition name="toast-slide">
-        <div v-if="toastMessage" class="toast-fixed">
-          <span class="toast-icon">✦</span>
-          {{ toastMessage }}
-        </div>
-      </Transition>
-
-      <!-- Loading Overlay saat sedang mencari data -->
-      <Transition name="overlay-fade">
-        <div v-if="isSearching" class="loading-overlay">
-          <div class="loading-card">
-            <div class="spinner-ring">
-              <div class="spinner-core"></div>
-            </div>
-            <p class="loading-title">Memuat Data Kendaraan</p>
-            <p class="loading-sub">Mohon tunggu sebentar...</p>
-            <div class="loading-dots">
-              <span></span><span></span><span></span>
-            </div>
-          </div>
-        </div>
-      </Transition>
-
       <Navbar 
         :active-tab="activeTab" 
         :hide-menu="!!paymentSuccessData"

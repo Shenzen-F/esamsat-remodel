@@ -1,24 +1,23 @@
 <!--
   @component LandingPage.vue
   @description Halaman selamat datang (splash page) e-Samsat Aceh.
-  Menampilkan hero banner, fitur unggulan, langkah penggunaan, dan footer.
+  Menampilkan hero banner, statistik, fitur unggulan, langkah penggunaan, mitra, CTA, dan footer.
   Pengguna dapat masuk ke aplikasi utama dengan menekan tombol "Bayar Pajak".
   @emits enter-app - Dikirim saat pengguna mengklik CTA untuk masuk ke halaman utama aplikasi.
 -->
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, reactive } from 'vue'
 import {
   ShieldCheck, Clock, CheckCircle, ArrowRight,
   Smartphone, Building2, MapPin, Star, ChevronDown,
-  Car, FileText, CreditCard, Mail
+  Car, FileText, CreditCard, Mail, Users, TrendingUp,
+  Timer, Headphones, Lock, Zap
 } from '@lucide/vue'
 import esamsatLogo from '../assets/esamsat.svg'
 import sekretariatLogo from '../assets/sekretariat samsat.png'
 import pancacitaLogo from '../assets/pancacita.png'
 import polriLogo from '../assets/Polri Logo - Colored - zonalogo.com.png'
 import jasaRaharjaLogo from '../assets/Jasa Raharja Logo - Colored - zonalogo.com.png'
-
-import Footer from './Footer.vue'
 
 const emit = defineEmits(['enter-app'])
 
@@ -67,6 +66,17 @@ const FEATURES = [
 ]
 
 /**
+ * Data statistik yang ditampilkan di stats bar.
+ * @type {Array<{icon: Component, value: string, label: string}>}
+ */
+const STATS = [
+  { icon: Users, value: '250K+', label: 'Wajib Pajak Aktif' },
+  { icon: TrendingUp, value: '98%', label: 'Tingkat Keberhasilan' },
+  { icon: Timer, value: '< 5 Mnt', label: 'Rata-rata Proses' },
+  { icon: Headphones, value: '24/7', label: 'Layanan Tersedia' },
+]
+
+/**
  * Langkah-langkah cara kerja e-Samsat ("How It Works").
  * Ditampilkan dalam 3 step card di landing page.
  * @type {Array<{num: string, icon: Component, title: string, desc: string}>}
@@ -76,7 +86,7 @@ const HOW_IT_WORKS = [
     num: '01',
     icon: Car,
     title: 'Masukan Data Kendaraan',
-    desc: ' Masukan NIK anda berdasarkan KTP asli, Nomor Polisi, dan 5 digit terakhir nomor rangka kendaraan Anda.',
+    desc: 'Masukan NIK anda berdasarkan KTP asli, Nomor Polisi, dan 5 digit terakhir nomor rangka kendaraan Anda.',
   },
   {
     num: '02',
@@ -104,19 +114,91 @@ const onScroll = () => {
   scrolled.value = window.scrollY > 40
 }
 
+/** Animated counter values for stats */
+const animatedStats = reactive({
+  0: '0',
+  1: '0%',
+  2: '0 Mnt',
+  3: '0'
+})
+
+/**
+ * Animate counting numbers for stats section using IntersectionObserver.
+ */
+const statsRef = ref(null)
+let statsAnimated = false
+
+const animateCounter = (index, target, suffix, prefix = '', duration = 1800) => {
+  const start = performance.now()
+  const step = (now) => {
+    const elapsed = now - start
+    const progress = Math.min(elapsed / duration, 1)
+    const eased = 1 - Math.pow(1 - progress, 3) // easeOutCubic
+    const current = Math.round(target * eased)
+    animatedStats[index] = prefix + current.toLocaleString('id-ID') + suffix
+    if (progress < 1) requestAnimationFrame(step)
+  }
+  requestAnimationFrame(step)
+}
+
+const startStatsAnimation = () => {
+  if (statsAnimated) return
+  statsAnimated = true
+  animateCounter(0, 250, 'K+', '', 2000)
+  animateCounter(1, 98, '%', '', 1800)
+  // Special case for "< 5 Mnt"
+  setTimeout(() => { animatedStats[2] = '< 5 Mnt' }, 1200)
+  // Special case for "24/7"
+  setTimeout(() => { animatedStats[3] = '24/7' }, 1000)
+}
+
+/**
+ * IntersectionObserver for scroll-triggered section animations
+ */
+const observedSections = ref(new Set())
+let sectionObserver = null
+
+const initSectionObserver = () => {
+  sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          observedSections.value.add(entry.target.dataset.section)
+          // Trigger stats animation when stats section appears
+          if (entry.target.dataset.section === 'stats') {
+            startStatsAnimation()
+          }
+        }
+      })
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
+  )
+
+  // Observe all sections
+  document.querySelectorAll('[data-section]').forEach(el => {
+    sectionObserver.observe(el)
+  })
+}
+
 /** Lifecycle: Mendaftarkan scroll event listener saat komponen ter-mount */
 onMounted(() => {
   window.addEventListener('scroll', onScroll)
+  // Delay observer setup to allow DOM rendering
+  setTimeout(initSectionObserver, 100)
 })
 
 /** Lifecycle: Membersihkan scroll event listener saat komponen akan di-destroy (mencegah memory leak) */
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', onScroll)
+  if (sectionObserver) sectionObserver.disconnect()
 })
+
+const isSectionVisible = (name) => observedSections.value.has(name)
 </script>
 
 <template>
   <div class="lp-root">
+    <!-- ── Navbar ── -->
     <nav :class="['lp-nav', { 'lp-nav--scrolled': scrolled }]">
       <div class="lp-nav-inner">
         <div class="lp-nav-brand">
@@ -129,12 +211,14 @@ onBeforeUnmount(() => {
           <span>e-Samsat <span class="lp-brand-accent">Aceh</span></span>
         </div>
 
+
         <button class="lp-nav-cta" @click="emit('enter-app')">
           Bayar Pajak <ArrowRight :size="16" />
         </button>
       </div>
     </nav>
 
+    <!-- ── Hero Section ── -->
     <section class="lp-hero">
       <div class="lp-blob lp-blob-1" />
       <div class="lp-blob lp-blob-2" />
@@ -156,7 +240,7 @@ onBeforeUnmount(() => {
 
         <div class="lp-hero-actions">
           <button class="lp-btn-hero" @click="emit('enter-app')">
-            Cek & Bayar Pajak Sekarang <ArrowRight :size="18" />
+            <Zap :size="18" /> Cek & Bayar Pajak Sekarang <ArrowRight :size="18" />
           </button>
           <a href="#cara-kerja" class="lp-btn-ghost">
             Pelajari Caranya
@@ -164,9 +248,6 @@ onBeforeUnmount(() => {
           </a>
         </div>
 
-        <div class="lp-trust-row">
-          <div class="lp-trust-item"><Clock :size="15" /><span>Proses Instan</span></div>
-        </div>
       </div>
 
       <a href="#cara-kerja" class="lp-scroll-indicator">
@@ -174,15 +255,22 @@ onBeforeUnmount(() => {
       </a>
     </section>
 
-    <section id="cara-kerja" class="lp-section lp-how-section">
+    <!-- ── How It Works Section ── -->
+    <section
+      id="cara-kerja"
+      class="lp-section lp-how-section"
+      :class="{ 'lp-section-visible': isSectionVisible('howto') }"
+      data-section="howto"
+    >
       <div class="lp-section-header">
+        <span class="lp-section-badge">PANDUAN</span>
         <h2 class="lp-section-title">Cara Kerja e-Samsat</h2>
         <p class="lp-section-desc">Hanya 3 langkah mudah untuk menyelesaikan kewajiban pajak kendaraan Anda.</p>
       </div>
 
       <div class="lp-how-grid">
         <template v-for="(item, idx) in HOW_IT_WORKS" :key="item.num">
-          <div class="lp-how-card">
+          <div class="lp-how-card" :style="{ '--stagger': idx * 0.12 + 's' }">
             <div class="lp-how-num">{{ item.num }}</div>
             <div class="lp-how-icon-ring">
               <component :is="item.icon" :size="28" />
@@ -201,6 +289,8 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
+
+    <!-- ── Footer ── -->
     <footer class="footer">
       <div class="footer-glow"></div>
       <div class="footer-content">
@@ -256,3 +346,261 @@ onBeforeUnmount(() => {
     </footer>
   </div>
 </template>
+
+<style scoped>
+/* ── Scroll-Triggered Animation Base ── */
+.lp-stats-bar,
+.lp-section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lp-section-visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Staggered children animation */
+.lp-section-visible .lp-feature-card,
+.lp-section-visible .lp-how-card,
+.lp-section-visible .lp-mitra-card {
+  animation: cardFadeUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: var(--stagger, 0s);
+}
+
+@keyframes cardFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Stats Bar ── */
+.lp-stats-bar {
+  position: relative;
+  z-index: 10;
+  margin-top: -3rem;
+}
+
+.lp-stats-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  padding: 0 2rem;
+}
+
+.lp-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  padding: 1.15rem 1.25rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.lp-stat-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.lp-stat-icon-ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ddc4a0;
+  flex-shrink: 0;
+}
+
+.lp-stat-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.lp-stat-value {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.lp-stat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.02em;
+}
+
+/* ── Navbar Center Links ── */
+.lp-nav-center {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.lp-nav-link-item {
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: color 0.2s ease;
+  position: relative;
+  padding: 0.2rem 0;
+}
+
+.lp-nav-link-item::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #ddc4a0;
+  border-radius: 2px;
+  transition: width 0.25s ease;
+}
+
+.lp-nav-link-item:hover {
+  color: #ffffff;
+}
+
+.lp-nav-link-item:hover::after {
+  width: 100%;
+}
+
+/* ── Scroll indicator bounce ── */
+.lp-scroll-indicator {
+  animation: indicatorBounce 2s ease-in-out infinite;
+}
+
+@keyframes indicatorBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ── Hero badge shimmer ── */
+.lp-hero-badge {
+  animation: badgeGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes badgeGlow {
+  0% { border-color: rgba(255, 255, 255, 0.2); box-shadow: 0 0 0 rgba(212, 175, 55, 0); }
+  100% { border-color: rgba(212, 175, 55, 0.5); box-shadow: 0 0 20px rgba(212, 175, 55, 0.15); }
+}
+
+/* ── Gradient text shimmer ── */
+.lp-hero-gradient {
+  animation: gradientShift 4s ease-in-out infinite alternate;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% center; }
+  100% { background-position: 100% center; }
+}
+
+/* ── CTA Banner enhancements ── */
+.lp-cta-banner {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  padding: 6rem 2rem;
+  text-align: center;
+}
+
+.lp-btn-cta-main {
+  box-shadow: 0 10px 32px rgba(212, 175, 55, 0.45), 0 0 60px rgba(212, 175, 55, 0.15);
+}
+
+.lp-btn-cta-main:hover {
+  box-shadow: 0 14px 38px rgba(212, 175, 55, 0.6), 0 0 80px rgba(212, 175, 55, 0.2);
+}
+
+/* ── Mitra cards hover ── */
+.lp-mitra-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.lp-mitra-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+/* ── Feature card hover ── */
+.lp-feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.lp-feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Responsive ── */
+@media (max-width: 992px) {
+  .lp-stats-inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .lp-nav-center {
+    display: none;
+  }
+  .lp-stats-inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+    padding: 0 1.25rem;
+  }
+  .lp-stat-item {
+    padding: 0.85rem 1rem;
+  }
+  .lp-stat-value {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .lp-stats-inner {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    padding: 0 1rem;
+  }
+  .lp-stat-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0.85rem 0.5rem;
+    gap: 0.5rem;
+  }
+  .lp-stat-icon-ring {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+  .lp-stat-value {
+    font-size: 1.15rem;
+  }
+  .lp-stat-label {
+    font-size: 0.65rem;
+  }
+}
+</style>
