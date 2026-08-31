@@ -65,18 +65,6 @@ const getSearchedVehicles = () => {
   }
 }
 
-const isReload = (() => {
-  try {
-    if (sessionStorage.getItem(SESSION_KEY)) {
-      return true
-    }
-    sessionStorage.setItem(SESSION_KEY, '1')
-    return false
-  } catch (e) {
-    return false
-  }
-})()
-
 /**
  * Menyimpan status (state) aplikasi saat ini (tab aktif, form pencarian, dll) 
  * ke dalam localStorage agar tidak hilang saat pengguna me-refresh halaman.
@@ -114,13 +102,7 @@ const loadLastPage = () => {
   }
 }
 
-if (isReload) {
-  localStorage.removeItem(STORAGE_KEY)
-  showLanding.value = true
-  activeTab.value = 'beranda'
-} else {
-  loadLastPage()
-}
+loadLastPage()
 
 watch(
   [showLanding, activeTab, formData, currentVehicle, paymentSuccessData],
