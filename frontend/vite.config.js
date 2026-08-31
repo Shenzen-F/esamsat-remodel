@@ -4,4 +4,14 @@ import vue from '@vitejs/plugin-vue'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  server: {
+    host: true,
+
+    allowedHosts: true,
+
+    hmr: {
+      protocol: 'wss',
+      clientPort: 443
+    }
+  }
 })
