@@ -8,10 +8,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, reactive } from 'vue'
 import {
-  ShieldCheck, Clock, CheckCircle, ArrowRight,
-  Smartphone, Building2, MapPin, Star, ChevronDown,
-  Car, FileText, CreditCard, Mail, Users, TrendingUp,
-  Timer, Headphones, Lock, Zap
+  ArrowRight, ChevronDown, Car, FileText, CreditCard, Zap
 } from '@lucide/vue'
 import esamsatLogo from '../assets/esamsat.svg'
 import sekretariatLogo from '../assets/sekretariat samsat.png'
@@ -21,60 +18,7 @@ import jasaRaharjaLogo from '../assets/Jasa Raharja Logo - Colored - zonalogo.co
 
 const emit = defineEmits(['enter-app'])
 
-/**
- * Daftar fitur unggulan e-Samsat Aceh yang ditampilkan di landing page.
- * Setiap item berisi ikon, judul, deskripsi, dan warna aksen.
- * @type {Array<{icon: Component, title: string, desc: string, color: string}>}
- */
-const FEATURES = [
-  {
-    icon: Clock,
-    title: 'Bayar Pajak Kilat',
-    desc: 'Proses pembayaran selesai dalam hitungan menit tanpa perlu antri di Samsat.',
-    color: '#c9a87c',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Aman & Terenkripsi',
-    desc: 'Data NIK dan kendaraan Anda dilindungi enkripsi standar perbankan.',
-    color: '#34d399',
-  },
-  {
-    icon: Smartphone,
-    title: 'Multi Platform',
-    desc: 'Akses dari HP, tablet, atau komputer kapan saja dan di mana saja.',
-    color: '#818cf8',
-  },
-  {
-    icon: Building2,
-    title: 'Multi Channel Bayar',
-    desc: 'Bank Aceh Syariah, QRIS, BSI, GoPay, OVO, ShopeePay, dan PT Pos.',
-    color: '#38bdf8',
-  },
-  {
-    icon: MapPin,
-    title: 'Samsat Keliling Aceh',
-    desc: 'Informasi jadwal dan lokasi Samsat Keliling & MPP seluruh Aceh.',
-    color: '#fb7185',
-  },
-  {
-    icon: FileText,
-    title: 'Resi Digital Resmi',
-    desc: 'Bukti pengesahan STNK digital dapat langsung dicetak saat itu juga.',
-    color: '#a78bfa',
-  },
-]
 
-/**
- * Data statistik yang ditampilkan di stats bar.
- * @type {Array<{icon: Component, value: string, label: string}>}
- */
-const STATS = [
-  { icon: Users, value: '250K+', label: 'Wajib Pajak Aktif' },
-  { icon: TrendingUp, value: '98%', label: 'Tingkat Keberhasilan' },
-  { icon: Timer, value: '< 5 Mnt', label: 'Rata-rata Proses' },
-  { icon: Headphones, value: '24/7', label: 'Layanan Tersedia' },
-]
 
 /**
  * Langkah-langkah cara kerja e-Samsat ("How It Works").
@@ -114,43 +58,7 @@ const onScroll = () => {
   scrolled.value = window.scrollY > 40
 }
 
-/** Animated counter values for stats */
-const animatedStats = reactive({
-  0: '0',
-  1: '0%',
-  2: '0 Mnt',
-  3: '0'
-})
 
-/**
- * Animate counting numbers for stats section using IntersectionObserver.
- */
-const statsRef = ref(null)
-let statsAnimated = false
-
-const animateCounter = (index, target, suffix, prefix = '', duration = 1800) => {
-  const start = performance.now()
-  const step = (now) => {
-    const elapsed = now - start
-    const progress = Math.min(elapsed / duration, 1)
-    const eased = 1 - Math.pow(1 - progress, 3) // easeOutCubic
-    const current = Math.round(target * eased)
-    animatedStats[index] = prefix + current.toLocaleString('id-ID') + suffix
-    if (progress < 1) requestAnimationFrame(step)
-  }
-  requestAnimationFrame(step)
-}
-
-const startStatsAnimation = () => {
-  if (statsAnimated) return
-  statsAnimated = true
-  animateCounter(0, 250, 'K+', '', 2000)
-  animateCounter(1, 98, '%', '', 1800)
-  // Special case for "< 5 Mnt"
-  setTimeout(() => { animatedStats[2] = '< 5 Mnt' }, 1200)
-  // Special case for "24/7"
-  setTimeout(() => { animatedStats[3] = '24/7' }, 1000)
-}
 
 /**
  * IntersectionObserver for scroll-triggered section animations
@@ -164,10 +72,6 @@ const initSectionObserver = () => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           observedSections.value.add(entry.target.dataset.section)
-          // Trigger stats animation when stats section appears
-          if (entry.target.dataset.section === 'stats') {
-            startStatsAnimation()
-          }
         }
       })
     },
@@ -210,11 +114,6 @@ const isSectionVisible = (name) => observedSections.value.has(name)
           </div>
           <span>e-Samsat <span class="lp-brand-accent">Aceh</span></span>
         </div>
-
-
-        <button class="lp-nav-cta" @click="emit('enter-app')">
-          Bayar Pajak <ArrowRight :size="16" />
-        </button>
       </div>
     </nav>
 
@@ -249,10 +148,6 @@ const isSectionVisible = (name) => observedSections.value.has(name)
         </div>
 
       </div>
-
-      <a href="#cara-kerja" class="lp-scroll-indicator">
-        <ChevronDown :size="22" />
-      </a>
     </section>
 
     <!-- ── How It Works Section ── -->
@@ -280,12 +175,6 @@ const isSectionVisible = (name) => observedSections.value.has(name)
           </div>
           <div v-if="idx < HOW_IT_WORKS.length - 1" class="lp-how-arrow"><ArrowRight :size="28" /></div>
         </template>
-      </div>
-
-      <div class="lp-how-cta">
-        <button class="lp-btn-hero" @click="emit('enter-app')">
-          Mulai Sekarang <ArrowRight :size="18" />
-        </button>
       </div>
     </section>
 
@@ -381,72 +270,7 @@ const isSectionVisible = (name) => observedSections.value.has(name)
   }
 }
 
-/* ── Stats Bar ── */
-.lp-stats-bar {
-  position: relative;
-  z-index: 10;
-  margin-top: -3rem;
-}
 
-.lp-stats-inner {
-  max-width: 1000px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.25rem;
-  padding: 0 2rem;
-}
-
-.lp-stat-item {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 18px;
-  padding: 1.15rem 1.25rem;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.lp-stat-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-}
-
-.lp-stat-icon-ring {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ddc4a0;
-  flex-shrink: 0;
-}
-
-.lp-stat-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-.lp-stat-value {
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -0.5px;
-  line-height: 1.15;
-}
-
-.lp-stat-label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
-  letter-spacing: 0.02em;
-}
 
 /* ── Navbar Center Links ── */
 .lp-nav-center {
@@ -554,53 +378,15 @@ const isSectionVisible = (name) => observedSections.value.has(name)
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* ── Responsive ── */
 @media (max-width: 992px) {
-  .lp-stats-inner {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media (max-width: 768px) {
   .lp-nav-center {
     display: none;
   }
-  .lp-stats-inner {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.85rem;
-    padding: 0 1.25rem;
-  }
-  .lp-stat-item {
-    padding: 0.85rem 1rem;
-  }
-  .lp-stat-value {
-    font-size: 1.2rem;
-  }
 }
 
 @media (max-width: 480px) {
-  .lp-stats-inner {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.65rem;
-    padding: 0 1rem;
-  }
-  .lp-stat-item {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 0.85rem 0.5rem;
-    gap: 0.5rem;
-  }
-  .lp-stat-icon-ring {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-  }
-  .lp-stat-value {
-    font-size: 1.15rem;
-  }
-  .lp-stat-label {
-    font-size: 0.65rem;
-  }
 }
 </style>
