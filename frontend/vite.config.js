@@ -7,11 +7,6 @@ export default defineConfig({
   server: {
     host: true,
 
-    allowedHosts: true,
-
-    hmr: {
-      protocol: 'wss',
-      clientPort: 443
-    }
+    allowedHosts: true
   }
 })
