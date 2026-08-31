@@ -89,7 +89,7 @@ const onSubmit = (e) => {
           </div>
           <div class="guide-item">
             <span class="guide-num">2.</span>
-            <span>Bayar melalui Bank Aceh Syariah atau PT Pos Indonesia.</span>
+            <span>Bayar melalui ATM Bank Aceh Syariah, Teller Bank Aceh Syariah, Aplikasi Action Mobile Banking Bank Aceh, Loket PT. POS Indonesia dan Aplikasi PosPay</span>
           </div>
           <div class="guide-item">
             <span class="guide-num">3.</span>

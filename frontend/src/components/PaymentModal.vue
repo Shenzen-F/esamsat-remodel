@@ -275,6 +275,73 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
               </ol>
             </div>
           </div>
+
+          <!-- Teller Bank Aceh Syariah -->
+          <div class="guide-dropdown-item" style="border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem; overflow: hidden; background: #ffffff;">
+            <button 
+              type="button"
+              @click="togglePaymentGuide('teller')"
+              style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.85rem; background: #f8fafc; border: none; font-size: 0.8rem; font-weight: 600; color: #1e293b; cursor: pointer; text-align: left;"
+            >
+              <span>Teller Bank Aceh Syariah</span>
+              <ChevronUp v-if="activePaymentGuide === 'teller'" :size="16" />
+              <ChevronDown v-else :size="16" />
+            </button>
+            <div v-show="activePaymentGuide === 'teller'" style="padding: 0.75rem 0.85rem; font-size: 0.75rem; color: #475569; line-height: 1.4; border-top: 1px solid #e2e8f0;">
+              <ol style="margin: 0; padding-left: 1.15rem;">
+                <li>Datangi kantor cabang Bank Aceh Syariah terdekat.</li>
+                <li>Sampaikan kepada Teller bahwa Anda ingin membayar Pajak Kendaraan (Samsat Aceh).</li>
+                <li>Berikan <strong>Kode Bayar</strong> yang sudah didapatkan dari situs e-Samsat kepada Teller.</li>
+                <li>Serahkan uang tunai sesuai dengan nominal tagihan yang disebutkan oleh Teller.</li>
+                <li>Simpan bukti pembayaran (resi/struk) yang diberikan oleh Teller sebagai bukti yang sah.</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Loket PT. POS Indonesia -->
+          <div class="guide-dropdown-item" style="border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem; overflow: hidden; background: #ffffff;">
+            <button 
+              type="button"
+              @click="togglePaymentGuide('pos')"
+              style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.85rem; background: #f8fafc; border: none; font-size: 0.8rem; font-weight: 600; color: #1e293b; cursor: pointer; text-align: left;"
+            >
+              <span>Loket PT. POS Indonesia</span>
+              <ChevronUp v-if="activePaymentGuide === 'pos'" :size="16" />
+              <ChevronDown v-else :size="16" />
+            </button>
+            <div v-show="activePaymentGuide === 'pos'" style="padding: 0.75rem 0.85rem; font-size: 0.75rem; color: #475569; line-height: 1.4; border-top: 1px solid #e2e8f0;">
+              <ol style="margin: 0; padding-left: 1.15rem;">
+                <li>Datangi kantor cabang atau loket PT. POS Indonesia terdekat.</li>
+                <li>Sampaikan kepada petugas loket bahwa Anda ingin membayar Pajak Kendaraan (Samsat Aceh).</li>
+                <li>Berikan <strong>Kode Bayar</strong> yang sudah didapatkan dari situs e-Samsat.</li>
+                <li>Serahkan uang tunai sesuai dengan nominal tagihan pajak beserta biaya admin (jika ada).</li>
+                <li>Simpan resi pembayaran yang dicetak oleh petugas POS sebagai bukti yang sah.</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- Aplikasi PosPay -->
+          <div class="guide-dropdown-item" style="border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem; overflow: hidden; background: #ffffff;">
+            <button 
+              type="button"
+              @click="togglePaymentGuide('pospay')"
+              style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.85rem; background: #f8fafc; border: none; font-size: 0.8rem; font-weight: 600; color: #1e293b; cursor: pointer; text-align: left;"
+            >
+              <span>Aplikasi PosPay</span>
+              <ChevronUp v-if="activePaymentGuide === 'pospay'" :size="16" />
+              <ChevronDown v-else :size="16" />
+            </button>
+            <div v-show="activePaymentGuide === 'pospay'" style="padding: 0.75rem 0.85rem; font-size: 0.75rem; color: #475569; line-height: 1.4; border-top: 1px solid #e2e8f0;">
+              <ol style="margin: 0; padding-left: 1.15rem;">
+                <li>Buka dan login ke aplikasi <strong>PosPay</strong>.</li>
+                <li>Pilih menu <strong>Pajak / Samsat</strong>.</li>
+                <li>Masukkan <strong>Kode Bayar</strong> yang sudah didapatkan dari situs e-Samsat.</li>
+                <li>Periksa kesesuaian data kendaraan dan nominal tagihan yang tertera di layar.</li>
+                <li>Lanjutkan proses pembayaran dengan memasukkan PIN aplikasi PosPay Anda.</li>
+                <li>Simpan bukti pembayaran digital sebagai bukti yang sah.</li>
+              </ol>
+            </div>
+          </div>
         </div>
 
         <div class="modal-countdown-banner">

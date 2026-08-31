@@ -149,25 +149,25 @@ const isPaid = computed(() => props.vehicle?.status === 'LUNAS')
       <div class="card-body">
         <div v-if="vehicle.riwayat && vehicle.riwayat.length > 0">
           <div v-for="(item, idx) in vehicle.riwayat" :key="idx" class="history-item">
-            <div style="flex: 1">
-              <div class="history-row">
-                <span class="history-label">Tgl. Bayar</span>
-                <span class="history-val">{{ item.tglBayar }}</span>
+            <div class="history-main-info" style="flex: 1">
+              <div class="history-date">
+                <Clock :size="13" style="display: inline-block; vertical-align: middle; margin-right: 4px; margin-top: -1px;" />
+                <span style="vertical-align: middle;">{{ item.tglBayar }}</span>
               </div>
-              <div class="history-row">
-                <span class="history-label">Masa Berlaku</span>
-                <span class="history-val">{{ item.masaBerlaku || '-' }}</span>
+              <div class="history-method" style="font-weight: 700; color: #1e293b; margin-top: 4px; font-size: 0.9rem;">
+                {{ item.metode }}
               </div>
-              <div class="history-row">
-                <span class="history-label">Tempat Pembayaran</span>
-                <span class="history-val">{{ item.metode }}</span>
+              <div class="history-validity" style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">
+                Berlaku s/d: <strong style="color: #475569;">{{ item.masaBerlaku || '-' }}</strong>
               </div>
             </div>
-            <div style="text-align: right; min-width: 80px">
-              <span style="color: #16a34a; font-weight: 800; font-size: 0.85rem">
+            <div class="history-status-info" style="text-align: right; min-width: 100px;">
+              <span style="color: #16a34a; font-weight: 800; font-size: 0.95rem; display: block; margin-bottom: 4px;">
                 {{ formatRupiah(item.nominal) }}
               </span>
-              <p style="font-size: 0.7rem; color: #16a34a">✓ {{ item.status }}</p>
+              <span style="font-size: 0.7rem; font-weight: 700; color: #16a34a; background: #dcfce7; padding: 0.25rem 0.6rem; border-radius: 4px; display: inline-block; text-transform: uppercase;">
+                ✓ {{ item.status }}
+              </span>
             </div>
           </div>
         </div>
