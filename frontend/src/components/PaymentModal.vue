@@ -11,8 +11,11 @@
   @emits payment-success - Dikirim saat pembayaran berhasil, membawa (nopolClean, kodeBayar)
 -->
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { X, Copy, Check, QrCode, Sparkles, ShieldCheck, ChevronDown, ChevronUp } from '@lucide/vue'
+
+// Key for storing paid vehicle info
+const PAID_KEY = 'esamsat_paid_vehicles'
 
 const props = defineProps({
   vehicle: { type: Object, required: true },
@@ -23,8 +26,17 @@ const emit = defineEmits(['close', 'payment-success'])
 
 const copied = ref(false)
 const isProcessing = ref(false)
-const isSuccess = ref(props.vehicle.status === 'LUNAS')
+const isSuccess = ref(false)
 const kodeBayar = ref('')
+// Determine if this vehicle has already been paid
+const hasPaid = computed(() => {
+  try {
+    const paid = JSON.parse(localStorage.getItem(PAID_KEY)) || {}
+    return !!paid[props.vehicle.nopolClean]
+  } catch (e) {
+    return false
+  }
+})
 const countdown = ref(23 * 3600 + 59 * 60 + 59)
 let countdownTimer = null
 
@@ -103,9 +115,28 @@ const closeSSE = () => {
 }
 
 onMounted(() => {
+  if (hasPaid.value) {
+    // Vehicle already paid: retrieve stored kodeBayar and mark success
+    const paid = JSON.parse(localStorage.getItem(PAID_KEY)) || {}
+    const record = paid[props.vehicle.nopolClean]
+    if (record && record.kodeBayar) {
+      kodeBayar.value = record.kodeBayar
+    }
+    isSuccess.value = true
+    // No need to start countdown or SSE for already paid
+    return
+  }
+
+  const storageKey = `kodebayar_${props.vehicle.nopolClean}`
   if (!kodeBayar.value) {
-    const randomCode = '982' + Math.floor(100000001 + Math.random() * 899999999)
-    kodeBayar.value = randomCode
+    const savedCode = sessionStorage.getItem(storageKey)
+    if (savedCode) {
+      kodeBayar.value = savedCode
+    } else {
+      const randomCode = '982' + Math.floor(100000001 + Math.random() * 899999999)
+      kodeBayar.value = randomCode
+      sessionStorage.setItem(storageKey, randomCode)
+    }
   }
 
   // Mulai dengarkan status pembayaran lewat SSE setelah kode bayar dibuat
@@ -163,6 +194,12 @@ const handleSimulatePayment = () => {
     isSuccess.value = true
     emit('payment-success', props.vehicle.nopolClean, kodeBayar.value)
   }, 600)
+}
+
+// Show receipt directly for already paid vehicle
+const showReceiptForPaid = () => {
+  isSuccess.value = true
+  emit('payment-success', props.vehicle.nopolClean, kodeBayar.value)
 }
 
 /**

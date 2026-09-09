@@ -38,6 +38,7 @@ const STORAGE_KEY = 'esamsat_last_page'
 const SESSION_KEY = 'esamsat_session_visited'
 const PAID_KEY = 'esamsat_paid_vehicles'
 const SEARCHED_KEY = 'esamsat_searched_vehicles'
+const KODE_BAYAR_KEY = 'esamsat_kode_bayar'
 const VALID_TABS = ['beranda', 'cek-pajak', 'informasi', 'bantuan']
 
 /**
@@ -66,27 +67,43 @@ const getSearchedVehicles = () => {
 }
 
 /**
+ * Mengambil semua kodeBayar yang tersimpan di localStorage.
+ * Kunci: nopolClean, Nilai: kodeBayar string
+ */
+const getStoredKodeBayar = () => {
+  try {
+    return JSON.parse(localStorage.getItem(KODE_BAYAR_KEY)) || {}
+  } catch (e) {
+    return {}
+  }
+}
+
+/**
  * Menyimpan status (state) aplikasi saat ini (tab aktif, form pencarian, dll) 
- * ke dalam localStorage agar tidak hilang saat pengguna me-refresh halaman.
+ * ke dalam sessionStorage agar tidak hilang saat pengguna me-refresh halaman,
+ * namun akan reset jika pengguna menutup tab/browser.
  */
 const saveState = () => {
-  localStorage.setItem(
+  sessionStorage.setItem(
     STORAGE_KEY,
     JSON.stringify({
       showLanding: showLanding.value,
       activeTab: activeTab.value,
-      formData: { ...formData }
+      formData: { ...formData },
+      currentVehicle: currentVehicle.value,
+      paymentSuccessData: paymentSuccessData.value,
+      showModal: showModal.value
     })
   )
 }
 
 /**
- * Memuat status aplikasi yang tersimpan di localStorage.
+ * Memuat status aplikasi yang tersimpan di sessionStorage.
  * Mengembalikan pengguna ke kondisi tab/halaman terakhir sebelum halaman di-refresh.
  */
 const loadLastPage = () => {
   try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY))
+    const saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY))
     if (!saved || typeof saved !== 'object') return
     if (saved.showLanding === false) {
       showLanding.value = false
@@ -97,6 +114,15 @@ const loadLastPage = () => {
     if (saved.formData && typeof saved.formData === 'object') {
       Object.assign(formData, saved.formData)
     }
+    if (saved.currentVehicle !== undefined) {
+      currentVehicle.value = saved.currentVehicle
+    }
+    if (saved.paymentSuccessData !== undefined) {
+      paymentSuccessData.value = saved.paymentSuccessData
+    }
+    if (saved.showModal !== undefined) {
+      showModal.value = saved.showModal
+    }
   } catch (e) {
     // abaikan jika data tidak valid
   }
@@ -105,7 +131,7 @@ const loadLastPage = () => {
 loadLastPage()
 
 watch(
-  [showLanding, activeTab, formData, currentVehicle, paymentSuccessData],
+  [showLanding, activeTab, formData, currentVehicle, paymentSuccessData, showModal],
   saveState,
   { deep: true }
 )
@@ -220,19 +246,26 @@ const handleSearch = async () => {
     currentVehicle.value = foundVehicle
   } else if (searchedRecord) {
     currentVehicle.value = searchedRecord.vehicle
-    paymentSuccessData.value = {
-      vehicle: searchedRecord.vehicle,
-      totalPajak: searchedRecord.totalPajak,
-      kodeBayar: searchedRecord.kodeBayar
-    }
   } else {
     currentVehicle.value = foundVehicle
+    // Store vehicle data without kodeBayar; kode will be generated when user clicks 'Generate Kode Pembayaran'
     searchedVehicles[searchKey] = {
       vehicle: foundVehicle,
-      totalPajak: result.totalPajak,
-      kodeBayar: '982' + Math.floor(100000001 + Math.random() * 899999999)
+      totalPajak: result.totalPajak
     }
     localStorage.setItem(SEARCHED_KEY, JSON.stringify(searchedVehicles))
+  }
+  // Auto-open payment modal only if user has previously generated a kode bayar
+  // (stored in localStorage, persists across window close/open)
+  if (!paidRecord && foundVehicle.status !== 'LUNAS') {
+    const allKodes = getStoredKodeBayar()
+    const savedKode = allKodes[cleanNopol]
+    if (savedKode) {
+      // Sync to sessionStorage so PaymentModal can pick it up
+      sessionStorage.setItem(`kodebayar_${cleanNopol}`, savedKode)
+      showModal.value = true
+    }
+    // If no savedKode → user never clicked generate, just show vehicle details
   }
 
   nextTick(() => {
@@ -264,6 +297,13 @@ const handleReset = () => {
   formErrors.nopolAngka = ''
   formErrors.nopolSeri = ''
   formErrors.noRangkaLast5 = ''
+  // Also clear any pending kode bayar for the current vehicle
+  if (currentVehicle.value) {
+    const allKodes = getStoredKodeBayar()
+    delete allKodes[currentVehicle.value.nopolClean]
+    localStorage.setItem(KODE_BAYAR_KEY, JSON.stringify(allKodes))
+    sessionStorage.removeItem(`kodebayar_${currentVehicle.value.nopolClean}`)
+  }
   currentVehicle.value = null
 }
 
@@ -271,6 +311,30 @@ const handleReset = () => {
  * Membuka pop-up (modal) pembayaran untuk membuat kode virtual account/kode bayar.
  */
 const handleGenerateKode = () => {
+  const vehicle = currentVehicle.value
+  if (!vehicle) return
+  const cleanNopol = vehicle.nopolClean
+
+  // Reuse existing kode or generate a new one
+  const allKodes = getStoredKodeBayar()
+  let kode = allKodes[cleanNopol]
+  if (!kode) {
+    kode = '982' + Math.floor(100000001 + Math.random() * 899999999)
+    allKodes[cleanNopol] = kode
+    localStorage.setItem(KODE_BAYAR_KEY, JSON.stringify(allKodes))
+  }
+
+  // Sync to sessionStorage for PaymentModal
+  sessionStorage.setItem(`kodebayar_${cleanNopol}`, kode)
+
+  // Also persist inside the searchedVehicles record
+  const searchedVehicles = getSearchedVehicles()
+  const searchKey = `${formData.nik.trim()}|${cleanNopol}|${formData.noRangkaLast5.trim().toUpperCase()}`
+  if (searchedVehicles[searchKey]) {
+    searchedVehicles[searchKey].kodeBayar = kode
+    localStorage.setItem(SEARCHED_KEY, JSON.stringify(searchedVehicles))
+  }
+
   showModal.value = true
 }
 
@@ -305,6 +369,33 @@ const handlePaymentSuccess = (nopolClean, kodeBayar) => {
     const paidVehicles = getPaidVehicles()
     paidVehicles[nopolClean] = { vehicle: updated, totalPajak, kodeBayar }
     localStorage.setItem(PAID_KEY, JSON.stringify(paidVehicles))
+
+    // Remove pending kode bayar — payment done, no need to auto-open again
+    const allKodes = getStoredKodeBayar()
+    delete allKodes[nopolClean]
+    localStorage.setItem(KODE_BAYAR_KEY, JSON.stringify(allKodes))
+    sessionStorage.removeItem(`kodebayar_${nopolClean}`)
+  }
+}
+
+/**
+ * Menampilkan kembali bukti pembayaran (PaymentSuccess) dari riwayat atau data lunas.
+ */
+const handleShowReceipt = (vehicle, totalPajak) => {
+  let kodeBayar = '-'
+  if (vehicle.riwayat && vehicle.riwayat.length > 0) {
+    kodeBayar = vehicle.riwayat[0].kodeBayar || '-'
+  } else {
+    const paidRecord = getPaidVehicles()[vehicle.nopolClean]
+    if (paidRecord) {
+      kodeBayar = paidRecord.kodeBayar
+    }
+  }
+
+  paymentSuccessData.value = {
+    vehicle,
+    totalPajak,
+    kodeBayar
   }
 }
 
@@ -313,12 +404,10 @@ const handlePaymentSuccess = (nopolClean, kodeBayar) => {
  * Juga membersihkan data pencarian aktif.
  */
 const onBackToHome = () => {
+  // Close receipt view but keep the form inputs intact
   paymentSuccessData.value = null
   currentVehicle.value = null
-  formData.nik = ''
-  formData.nopolAngka = ''
-  formData.nopolSeri = ''
-  formData.noRangkaLast5 = ''
+  // Keep formData as is; only clear errors and reset tab if needed
   formErrors.nik = ''
   formErrors.nopolAngka = ''
   formErrors.nopolSeri = ''
@@ -372,6 +461,7 @@ const onBackToHome = () => {
                 <TaxDetails
                   :vehicle="currentVehicle"
                   @generate-kode="handleGenerateKode"
+                  @show-receipt="handleShowReceipt"
                 />
               </div>
             </Transition>

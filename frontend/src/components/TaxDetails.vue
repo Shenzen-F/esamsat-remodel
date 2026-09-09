@@ -18,7 +18,7 @@ const props = defineProps({
   vehicle: { type: Object, default: null }
 })
 
-const emit = defineEmits(['generate-kode'])
+const emit = defineEmits(['generate-kode', 'show-receipt'])
 
 /**
  * Memformat angka nominal menjadi format mata uang Rupiah.
@@ -201,9 +201,9 @@ const isPaid = computed(() => props.vehicle?.status === 'LUNAS')
         </button>
       </template>
       <template v-else>
-        <button class="btn-secondary" style="width: 100%; cursor: not-allowed; opacity: 0.8; background-color: #f1f5f9; color: #16a34a; border: 1px solid #16a34a; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.85rem; border-radius: 12px; font-weight: 600;" disabled>
+        <button class="btn-primary" style="width: 100%; background-color: #16a34a; border-color: #16a34a; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.85rem; border-radius: 12px; font-weight: 600;" @click="emit('show-receipt', vehicle, totalPajak)">
           <CheckCircle2 :size="20" />
-          Telah Lunas
+          Tampilkan Bukti Pembayaran
         </button>
       </template>
     </div>
