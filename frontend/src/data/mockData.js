@@ -13,109 +13,112 @@
  */
 export const MOCK_VEHICLES = [
   {
-    nopol: "BL 4582 AA",
-    nopolClean: "BL4582AA",
-    namaPemilik: "BUDIONO SIREGAR NST",
-    nik: "1171012304920001",
-    nikMasked: "1171**********",
-    jenisMerek: "MOTOR / HONDA",
-    modelTahun: "SCOOPY / 2022",
-    warna: "HITAM METALIK",
-    noRangka: "MHRE*********12345",
-    noMesin: "L15B*********6789",
-    noRangkaLast5: "12345",
-    masaBerlakuStnk: "12 MEI 2026",
-    tglJatuhTempo: "12 MEI 2026",
-    status: "BELUM BAYAR",
-    rincianPajak: {
+    statusCode: 1,
+    statusText: "OK",
+    deskripsi: "Kendaraan Bisa Melakukan Pembayaran Online",
+    kendaraan: {
+      nopol: "BL 4582 AA",
+      nik: "1171012304920001",
+      jenis: "MOTOR",
+      merek: "HONDA",
+      model: "SCOOPY",
+      tipe: "SCOOPY",
+      tahun: "2022",
+      warna: "HITAM METALIK",
+      sdStnk: "12 MEI 2026",
+      sdNotice: "12 MEI 2026"
+    },
+    pajak: {
       pkb: 4250000,
-      opsenPkb: 425000,
-      dendaPkb: 125000,
-      dendaOpsenPkb: 12500,
-      swdkllj: 143000,
-      opsenDendaSwdkllj: 14300,
-      biayaAdmin: 0
+      opkb: 425000,
+      dpkb: 125000,
+      odpkb: 12500,
+      swd: 143000,
+      dswd: 14300,
+      total: 4969800,
+      tglTtp: "12 MEI 2026",
+      sdNoticeYad: "12 MEI 2027"
     },
-    riwayat: [
+    noReff: "w6hgYdF4wc0c9Nr4ChfV",
+    riwayatPembayaran: [
       {
-        tglBayar: "12 Mei 2025 - 09:45 WIB",
-        masaBerlaku: "12 Mei 2026",
-        kodeBayar: "982039182301",
-        metode: "Bank Aceh Syariah Mobile",
-        nominal: 4969800,
-        status: "Berhasil"
+        tanggalBayar: "12 Mei 2025",
+        lokasiPembayaran: "Banda Aceh",
+        metodePembayaran: "Bank Aceh Syariah Mobile",
+        noReff: "982039182301",
+        total: 4969800
       }
-    ]
+    ],
+    nopolClean: "BL4582AA",
+    noRangkaLast5: "12345"
   },
   {
-    nopol: "BL 1234 AB",
-    nopolClean: "BL1234AB",
-    namaPemilik: "TEUKU ISKANDAR MUDA",
-    nik: "1172021508850002",
-    nikMasked: "1172**********",
-    jenisMerek: "MOBIL / TOYOTA",
-    modelTahun: "FORTUNER VRZ / 2023",
-    warna: "PUTIH MUTIARA",
-    noRangka: "MHFY*********88321",
-    noMesin: "2GD*********5412",
-    noRangkaLast5: "88321",
-    masaBerlakuStnk: "20 AGUSTUS 2026",
-    tglJatuhTempo: "20 AGUSTUS 2026",
-    status: "BELUM BAYAR",
-    rincianPajak: {
+    statusCode: 1,
+    statusText: "OK",
+    deskripsi: "Kendaraan Bisa Melakukan Pembayaran Online",
+    kendaraan: {
+      nopol: "BL 1234 AB",
+      nik: "1172021508850002",
+      jenis: "MOBIL",
+      merek: "TOYOTA",
+      model: "FORTUNER",
+      tipe: "VRZ",
+      tahun: "2023",
+      warna: "PUTIH MUTIARA",
+      sdStnk: "20 AGUSTUS 2026",
+      sdNotice: "20 AGUSTUS 2026"
+    },
+    pajak: {
       pkb: 7850000,
-      opsenPkb: 785000,
-      dendaPkb: 0,
-      dendaOpsenPkb: 0,
-      swdkllj: 143000,
-      opsenDendaSwdkllj: 0,
-      biayaAdmin: 50000
+      opkb: 785000,
+      dpkb: 0,
+      odpkb: 0,
+      swd: 143000,
+      dswd: 0,
+      total: 8828000,
+      tglTtp: "20 AGUSTUS 2026",
+      sdNoticeYad: "20 AGUSTUS 2027"
     },
-    riwayat: [
+    noReff: "w6hgYdF4wc0c9Nr4ChfV",
+    riwayatPembayaran: [
       {
-        tglBayar: "20 Agustus 2025 - 11:20 WIB",
-        masaBerlaku: "20 Agustus 2026",
-        kodeBayar: "982039182302",
-        metode: "PT Pos Indonesia (PosPay)",
-        nominal: 8828000,
-        status: "Berhasil"
+        tanggalBayar: "20 Agustus 2025",
+        lokasiPembayaran: "Lhokseumawe",
+        metodePembayaran: "PT Pos Indonesia (PosPay)",
+        noReff: "982039182302",
+        total: 8828000
       }
-    ]
+    ],
+    nopolClean: "BL1234AB",
+    noRangkaLast5: "88321"
   },
   {
-    nopol: "BL 8888 AC",
-    nopolClean: "BL8888AC",
-    namaPemilik: "CUT FATIMAH AZ-ZAHRA",
-    nik: "1101014402960003",
-    nikMasked: "1101**********",
-    jenisMerek: "MOTOR / YAMAHA",
-    modelTahun: "NMAX 155 ABS / 2024",
-    warna: "MAXI MATTE BLACK",
-    noRangka: "MH3S*********99214",
-    noMesin: "G3J1E*********3321",
-    noRangkaLast5: "99214",
-    masaBerlakuStnk: "05 DESEMBER 2026",
-    tglJatuhTempo: "05 DESEMBER 2026",
-    status: "LUNAS",
-    rincianPajak: {
-      pkb: 680000,
-      opsenPkb: 68000,
-      dendaPkb: 0,
-      dendaOpsenPkb: 0,
-      swdkllj: 35000,
-      opsenDendaSwdkllj: 0,
-      biayaAdmin: 0
+    statusCode: 2,
+    statusText: "Validasi Pembayaran",
+    deskripsi: "kendaraan tidak bisa melakukan pembayaran pajak online karena sudah masuk masa ganti plat 5 tahunan, silahkan ke kantor samsat UPTD wilayah kab/kota asal kendaraan",
+    kendaraan: {
+      nopol: "BL 8888 AC",
+      nik: "1101014402960003",
+      jenis: "MOTOR",
+      merek: "YAMAHA",
+      model: "NMAX",
+      tipe: "155 ABS",
+      tahun: "2024",
+      warna: "MAXI MATTE BLACK",
+      sdStnk: "05 DESEMBER 2026",
+      sdNotice: "05 DESEMBER 2026"
     },
-    riwayat: [
+    riwayatPembayaran: [
       {
-        tglBayar: "05 Des 2025 - 10:15 WIB",
-        masaBerlaku: "05 Des 2026",
-        kodeBayar: "982039182301",
-        metode: "Bank Aceh Syariah Mobile",
-        nominal: 783000,
-        status: "Berhasil"
+        tanggalBayar: "05 Des 2025",
+        lokasiPembayaran: "Langsa",
+        metodePembayaran: "Bank Aceh Syariah Mobile",
+        noReff: "982039182301",
+        total: 783000
       }
-    ]
+    ],
+    nopolClean: "BL8888AC",
+    noRangkaLast5: "99214"
   }
 ];
 
@@ -166,13 +169,12 @@ export const calculateTotalPajak = (rincianPajak) => {
   if (!rincianPajak) return 0
   const {
     pkb = 0,
-    opsenPkb = 0,
-    dendaPkb = 0,
-    dendaOpsenPkb = 0,
-    swdkllj = 0,
-    opsenDendaSwdkllj = 0,
-    biayaAdmin = 0
+    opkb = 0,
+    dpkb = 0,
+    odpkb = 0,
+    swd = 0,
+    dswd = 0
   } = rincianPajak
-  return pkb + opsenPkb + dendaPkb + dendaOpsenPkb + swdkllj + opsenDendaSwdkllj + biayaAdmin
+  return pkb + opkb + dpkb + odpkb + swd + dswd
 }
 

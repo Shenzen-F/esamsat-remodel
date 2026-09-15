@@ -383,8 +383,8 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
 
         <div class="modal-countdown-banner">
           <div>
-            <span style="font-size: 0.75rem; color: #64748b; display: block">
-              Total Tagihan Pajak ({{ vehicle.nopol }})
+            <span style="font-size: 0.75rem; color: #64748b; display: block" v-if="vehicle.kendaraan">
+              Total Tagihan Pajak ({{ vehicle.kendaraan.nopol }})
             </span>
             <strong style="font-size: 1.15rem; color: #0f172a; font-weight: 800">
               {{ formatRupiah(totalPajak) }}
@@ -472,14 +472,14 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
             </div>
           </div>
 
-          <div class="modal-receipt-grid">
+          <div class="modal-receipt-grid" v-if="vehicle.kendaraan">
             <div>
               <span style="color: #64748b; font-size: 0.7rem; display: block">NOPOL:</span>
-              <strong>{{ vehicle.nopol }}</strong>
+              <strong>{{ vehicle.kendaraan.nopol }}</strong>
             </div>
             <div>
-              <span style="color: #64748b; font-size: 0.7rem; display: block">NAMA PEMILIK:</span>
-              <strong>{{ vehicle.namaPemilik }}</strong>
+              <span style="color: #64748b; font-size: 0.7rem; display: block">NIK:</span>
+              <strong>{{ vehicle.kendaraan.nik }}</strong>
             </div>
             <div>
               <span style="color: #64748b; font-size: 0.7rem; display: block">KODE BAYAR:</span>
@@ -487,7 +487,7 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
             </div>
             <div>
               <span style="color: #64748b; font-size: 0.7rem; display: block">TANGGAL BAYAR:</span>
-              <strong>{{ (vehicle.riwayat && vehicle.riwayat[0]) ? vehicle.riwayat[0].tglBayar : new Date().toLocaleDateString('id-ID') }}</strong>
+              <strong>{{ (vehicle.riwayatPembayaran && vehicle.riwayatPembayaran[0]) ? vehicle.riwayatPembayaran[0].tanggalBayar : new Date().toLocaleDateString('id-ID') }}</strong>
             </div>
           </div>
 

@@ -55,22 +55,22 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
         </div>
       </div>
 
-      <div class="receipt-grid">
+      <div class="receipt-grid" v-if="vehicle.kendaraan">
         <div class="receipt-field">
           <span class="receipt-label">NOPOL</span>
-          <strong class="receipt-value">{{ vehicle.nopol }}</strong>
+          <strong class="receipt-value">{{ vehicle.kendaraan.nopol }}</strong>
         </div>
         <div class="receipt-field">
-          <span class="receipt-label">NAMA PEMILIK</span>
-          <strong class="receipt-value">{{ vehicle.namaPemilik }}</strong>
+          <span class="receipt-label">NIK</span>
+          <strong class="receipt-value">{{ vehicle.kendaraan.nik }}</strong>
         </div>
         <div class="receipt-field">
           <span class="receipt-label">JENIS / MEREK</span>
-          <strong class="receipt-value">{{ vehicle.jenisMerek }}</strong>
+          <strong class="receipt-value">{{ vehicle.kendaraan.jenis }} / {{ vehicle.kendaraan.merek }}</strong>
         </div>
         <div class="receipt-field">
           <span class="receipt-label">MODEL / TAHUN</span>
-          <strong class="receipt-value">{{ vehicle.modelTahun }}</strong>
+          <strong class="receipt-value">{{ vehicle.kendaraan.model }} / {{ vehicle.kendaraan.tahun }}</strong>
         </div>
         <div class="receipt-field">
           <span class="receipt-label">KODE BAYAR</span>
@@ -81,12 +81,12 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
           <strong class="receipt-value">{{ new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) }}</strong>
         </div>
         <div class="receipt-field">
-          <span class="receipt-label">NO. RANGKA</span>
-          <strong class="receipt-value">{{ vehicle.noRangka }}</strong>
+          <span class="receipt-label">5 DIGIT TERAKHIR NO. RANGKA</span>
+          <strong class="receipt-value">{{ vehicle.noRangkaLast5 || '-' }}</strong>
         </div>
         <div class="receipt-field">
           <span class="receipt-label">MASA BERLAKU STNK</span>
-          <strong class="receipt-value">{{ vehicle.masaBerlakuStnk }}</strong>
+          <strong class="receipt-value">{{ vehicle.kendaraan.sdStnk }}</strong>
         </div>
       </div>
 

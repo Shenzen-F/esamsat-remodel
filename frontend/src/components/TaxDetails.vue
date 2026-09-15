@@ -32,12 +32,12 @@ const formatRupiah = (val) => {
 /**
  * Properti komputasi untuk menghitung total pajak otomatis.
  */
-const totalPajak = computed(() => calculateTotalPajak(props.vehicle?.rincianPajak))
+const totalPajak = computed(() => calculateTotalPajak(props.vehicle?.pajak))
 
 /**
  * Mengecek status apakah tagihan kendaraan saat ini sudah lunas atau belum.
  */
-const isPaid = computed(() => props.vehicle?.status === 'LUNAS')
+const isPaid = computed(() => props.vehicle?.statusCode === 2 || props.vehicle?.status === 'LUNAS')
 </script>
 
 <template>
@@ -49,40 +49,40 @@ const isPaid = computed(() => props.vehicle?.status === 'LUNAS')
         <h3 class="card-title">INFORMASI DATA KENDARAAN</h3>
       </div>
       <div class="card-body">
-        <div class="info-fields-grid">
+        <div class="info-fields-grid" v-if="vehicle.kendaraan">
           <div class="info-field-item">
             <span class="info-label">Nomor Polisi</span>
-            <span class="info-value">{{ vehicle.nopol }}</span>
+            <span class="info-value">{{ vehicle.kendaraan.nopol }}</span>
           </div>
 
           <div class="info-field-item">
             <span class="info-label">NIK</span>
-            <span class="info-value">{{ vehicle.nik || '-' }}</span>
+            <span class="info-value">{{ vehicle.kendaraan.nik || '-' }}</span>
           </div>
 
           <div class="info-field-item">
             <span class="info-label">Jenis / Merek</span>
-            <span class="info-value">{{ vehicle.jenisMerek }}</span>
+            <span class="info-value">{{ vehicle.kendaraan.jenis }} / {{ vehicle.kendaraan.merek }}</span>
           </div>
 
           <div class="info-field-item">
             <span class="info-label">Model / Tahun</span>
-            <span class="info-value">{{ vehicle.modelTahun }}</span>
+            <span class="info-value">{{ vehicle.kendaraan.model }} / {{ vehicle.kendaraan.tahun }}</span>
           </div>
 
           <div class="info-field-item">
             <span class="info-label">Warna</span>
-            <span class="info-value">{{ vehicle.warna }}</span>
+            <span class="info-value">{{ vehicle.kendaraan.warna }}</span>
           </div>
 
           <div class="info-field-item">
             <span class="info-label">Masa Berlaku STNK</span>
-            <span class="info-value">{{ vehicle.masaBerlakuStnk }}</span>
+            <span class="info-value">{{ vehicle.kendaraan.sdStnk }}</span>
           </div>
 
           <div class="info-field-item">
             <span class="info-label">Tgl. Jatuh Tempo</span>
-            <span class="info-value">{{ vehicle.tglJatuhTempo }}</span>
+            <span class="info-value">{{ vehicle.kendaraan.sdNotice }}</span>
           </div>
         </div>
       </div>
@@ -105,31 +105,27 @@ const isPaid = computed(() => props.vehicle?.status === 'LUNAS')
           <tbody>
             <tr>
               <td>PKB (Pajak Kendaraan Bermotor)</td>
-              <td>{{ (vehicle.rincianPajak?.pkb || 0).toLocaleString('id-ID') }}</td>
+              <td>{{ (vehicle.pajak?.pkb || 0).toLocaleString('id-ID') }}</td>
             </tr>
             <tr>
               <td>Opsen PKB (Kabupaten/Kota)</td>
-              <td>{{ (vehicle.rincianPajak?.opsenPkb || 0).toLocaleString('id-ID') }}</td>
+              <td>{{ (vehicle.pajak?.opkb || 0).toLocaleString('id-ID') }}</td>
             </tr>
             <tr>
               <td>Denda PKB</td>
-              <td>{{ (vehicle.rincianPajak?.dendaPkb || 0).toLocaleString('id-ID') }}</td>
+              <td>{{ (vehicle.pajak?.dpkb || 0).toLocaleString('id-ID') }}</td>
             </tr>
             <tr>
               <td>Denda Opsen PKB</td>
-              <td>{{ (vehicle.rincianPajak?.dendaOpsenPkb || 0).toLocaleString('id-ID') }}</td>
+              <td>{{ (vehicle.pajak?.odpkb || 0).toLocaleString('id-ID') }}</td>
             </tr>
             <tr>
               <td>SWDKLLJ (Wajib Jasa Raharja)</td>
-              <td>{{ (vehicle.rincianPajak?.swdkllj || 0).toLocaleString('id-ID') }}</td>
+              <td>{{ (vehicle.pajak?.swd || 0).toLocaleString('id-ID') }}</td>
             </tr>
             <tr>
               <td>Opsen Denda SWDKLLJ</td>
-              <td>{{ (vehicle.rincianPajak?.opsenDendaSwdkllj || 0).toLocaleString('id-ID') }}</td>
-            </tr>
-            <tr>
-              <td>Biaya Admin STNK &amp; Plat</td>
-              <td>{{ (vehicle.rincianPajak?.biayaAdmin || 0).toLocaleString('id-ID') }}</td>
+              <td>{{ (vehicle.pajak?.dswd || 0).toLocaleString('id-ID') }}</td>
             </tr>
           </tbody>
         </table>
@@ -147,26 +143,26 @@ const isPaid = computed(() => props.vehicle?.status === 'LUNAS')
         <h3 class="card-title">RIWAYAT PEMBAYARAN</h3>
       </div>
       <div class="card-body">
-        <div v-if="vehicle.riwayat && vehicle.riwayat.length > 0">
-          <div v-for="(item, idx) in vehicle.riwayat" :key="idx" class="history-item">
+        <div v-if="vehicle.riwayatPembayaran && vehicle.riwayatPembayaran.length > 0">
+          <div v-for="(item, idx) in vehicle.riwayatPembayaran" :key="idx" class="history-item">
             <div class="history-main-info" style="flex: 1">
               <div class="history-date">
                 <Clock :size="13" style="display: inline-block; vertical-align: middle; margin-right: 4px; margin-top: -1px;" />
-                <span style="vertical-align: middle;">{{ item.tglBayar }}</span>
+                <span style="vertical-align: middle;">{{ item.tanggalBayar }}</span>
               </div>
               <div class="history-method" style="font-weight: 700; color: #1e293b; margin-top: 4px; font-size: 0.9rem;">
-                {{ item.metode }}
+                {{ item.metodePembayaran }}
               </div>
               <div class="history-validity" style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">
-                Berlaku s/d: <strong style="color: #475569;">{{ item.masaBerlaku || '-' }}</strong>
+                Ref: <strong style="color: #475569;">{{ item.noReff || '-' }}</strong>
               </div>
             </div>
             <div class="history-status-info" style="text-align: right; min-width: 100px;">
               <span style="color: #16a34a; font-weight: 800; font-size: 0.95rem; display: block; margin-bottom: 4px;">
-                {{ formatRupiah(item.nominal) }}
+                {{ formatRupiah(item.total) }}
               </span>
               <span style="font-size: 0.7rem; font-weight: 700; color: #16a34a; background: #dcfce7; padding: 0.25rem 0.6rem; border-radius: 4px; display: inline-block; text-transform: uppercase;">
-                ✓ {{ item.status }}
+                ✓ BERHASIL
               </span>
             </div>
           </div>
@@ -188,9 +184,9 @@ const isPaid = computed(() => props.vehicle?.status === 'LUNAS')
       <span class="tagihan-title">TOTAL TAGIHAN</span>
       <div class="tagihan-amount">{{ formatRupiah(totalPajak) }}</div>
 
-      <div class="due-date-pill">
+      <div class="due-date-pill" v-if="vehicle.kendaraan">
         <span>Jatuh Tempo</span>
-        <span class="due-date-value">{{ vehicle.tglJatuhTempo }}</span>
+        <span class="due-date-value">{{ vehicle.kendaraan.sdNotice }}</span>
       </div>
 
       <!-- Tombol bayar: muncul saat BELUM BAYAR -->

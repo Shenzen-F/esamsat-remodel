@@ -45,46 +45,54 @@ const generateDummyVehicle = ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => 
   const nopol = ('BL ' + nopolAngka + seri).trim()
   const nopolClean = nopol.replace(/\s+/g, '').toUpperCase()
   
-  // Generate angka acak untuk pajak agar terlihat realistis
   const pkb = Math.floor(Math.random() * (4000000 - 500000 + 1) + 500000)
-  const swdkllj = 35000
+  const swd = 35000
   
   return {
-    nopol,
-    nopolClean,
-    namaPemilik: 'PEMILIK KENDARAAN (DUMMY)',
-    nik,
-    nikMasked: nik ? nik.substring(0, 4) + '**********' + nik.slice(-2) : '1171**********01',
-    jenisMerek: 'HONDA / VARIO',
-    modelTahun: 'MATIC / 2022',
-    warna: 'HITAM',
-    noRangka: noRangkaLast5 ? 'MHRE*************' + noRangkaLast5 : 'MHRE*************12345',
-    noMesin: 'JFD1E123456',
-    noRangkaLast5: noRangkaLast5 || '12345',
-    masaBerlakuStnk: '12 AGUSTUS 2028',
-    tglJatuhTempo: '12 AGUSTUS 2024',
-    status: 'BELUM BAYAR',
-    rincianPajak: {
-      pkb: pkb,
-      opsenPkb: Math.floor(pkb * 0.1),
-      dendaPkb: 0,
-      dendaOpsenPkb: 0,
-      swdkllj: swdkllj,
-      opsenDendaSwdkllj: 0,
-      biayaAdmin: 0,
+    statusCode: 1,
+    statusText: 'OK',
+    deskripsi: 'Data simulasi ditampilkan untuk ' + nopol,
+    kendaraan: {
+      nopol,
+      nik: nik || '1171000000000001',
+      jenis: 'MOTOR',
+      merek: 'HONDA',
+      model: 'VARIO',
+      tipe: 'MATIC',
+      tahun: '2022',
+      warna: 'HITAM',
+      sdStnk: '12 AGUSTUS 2028',
+      sdNotice: '12 AGUSTUS 2024'
     },
-    riwayat: [],
+    pajak: {
+      pkb: pkb,
+      opkb: Math.floor(pkb * 0.1),
+      dpkb: 0,
+      odpkb: 0,
+      swd: swd,
+      dswd: 0,
+      total: pkb + Math.floor(pkb * 0.1) + swd,
+      tglTtp: '12 AGUSTUS 2024',
+      sdNoticeYad: '12 AGUSTUS 2025'
+    },
+    noReff: 'simulated_reff_123',
+    riwayatPembayaran: [],
+    nopolClean,
+    noRangkaLast5: noRangkaLast5 || '12345'
   }
 }
 
 /** Menerapkan NIK input user ke data kendaraan yang ditemukan. */
-const applyUserInput = (vehicle, inputNik) => ({
-  ...vehicle,
-  nik: inputNik || vehicle.nik,
-  nikMasked: inputNik
-    ? inputNik.substring(0, 4) + '**********' + inputNik.slice(-2)
-    : vehicle.nikMasked,
-})
+const applyUserInput = (vehicle, inputNik) => {
+  if (!inputNik) return vehicle;
+  return {
+    ...vehicle,
+    kendaraan: {
+      ...vehicle.kendaraan,
+      nik: inputNik
+    }
+  }
+}
 
 // ─── IMPLEMENTASI MOCK ────────────────────────────────────────────────────────
 
@@ -107,8 +115,8 @@ const searchMock = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
     return {
       status: 'found',
       vehicle,
-      totalPajak: calculateTotalPajak(vehicle.rincianPajak),
-      message: 'Data ditemukan untuk kendaraan ' + vehicle.nopol,
+      totalPajak: calculateTotalPajak(vehicle.pajak),
+      message: 'Data ditemukan untuk kendaraan ' + vehicle.kendaraan.nopol,
     }
   }
 
@@ -117,8 +125,8 @@ const searchMock = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
   return {
     status: 'found',
     vehicle,
-    totalPajak: calculateTotalPajak(vehicle.rincianPajak),
-    message: 'Data simulasi ditampilkan untuk ' + vehicle.nopol,
+    totalPajak: calculateTotalPajak(vehicle.pajak),
+    message: 'Data simulasi ditampilkan untuk ' + vehicle.kendaraan.nopol,
   }
 }
 
@@ -130,41 +138,19 @@ const searchMock = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
  */
 const transformResponse = (apiData, inputNik) => {
   const k = apiData.kendaraan || {}
-  const p = apiData.pajak || {}
-
+  
   return {
-    nopol:        k.nopol || '-',
-    nopolClean:   (k.nopol || '').replace(/\\s+/g, '').toUpperCase(),
-    namaPemilik:  '-', // Tidak ada di spec
-    nik:          inputNik || k.nik || '-',
-    nikMasked:    inputNik ? inputNik.substring(0, 4) + '**********' + inputNik.slice(-2) : '-',
-    jenisMerek:   `${k.jenis || ''} / ${k.merek || '-'}`.trim(),
-    modelTahun:   `${k.model || ''} / ${k.tahun || '-'}`.trim(),
-    warna:        k.warna || '-',
-    noRangka:     '-', // Tidak ada di spec
-    noMesin:      '-', // Tidak ada di spec
-    noRangkaLast5: '-', // Tidak ada di spec
-    masaBerlakuStnk: k.sdStnk || '-',
-    tglJatuhTempo:   k.sdNotice  || '-',
-    status:       'BELUM BAYAR',
-    rincianPajak: {
-      pkb:               p.pkb ?? 0,
-      opsenPkb:          p.opkb ?? 0,
-      dendaPkb:          p.dpkb ?? 0,
-      dendaOpsenPkb:     p.odpkb ?? 0,
-      swdkllj:           p.swd ?? 0,
-      opsenDendaSwdkllj: p.dswd ?? 0,
-      biayaAdmin:        0, // Tidak ada di spec
+    statusCode: apiData.statusCode,
+    statusText: apiData.statusText,
+    deskripsi: apiData.deskripsi,
+    kendaraan: {
+      ...k,
+      nik: inputNik || k.nik || '-'
     },
-    riwayat: (apiData.riwayatPembayaran || []).map((r) => ({
-      tglBayar:    r.tanggalBayar || '-',
-      masaBerlaku: '-', // Tidak ada di spec
-      kodeBayar:   r.noReff || '-',
-      metode:      r.metodePembayaran || '-',
-      nominal:     r.total || 0,
-      status:      'Berhasil',
-    })),
-    noReff: apiData.noReff || null
+    pajak: apiData.pajak || {},
+    noReff: apiData.noReff || null,
+    riwayatPembayaran: apiData.riwayatPembayaran || [],
+    nopolClean: (k.nopol || '').replace(/\s+/g, '').toUpperCase(),
   }
 }
 
@@ -203,7 +189,7 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
     }
 
     const vehicle = transformResponse(responseBody.data, nik)
-    return { status: 'found', vehicle, totalPajak: calculateTotalPajak(vehicle.rincianPajak), message: responseBody.data?.deskripsi || 'Data ditemukan' }
+    return { status: 'found', vehicle, totalPajak: calculateTotalPajak(vehicle.pajak), message: responseBody.data?.deskripsi || 'Data ditemukan' }
   } catch (err) {
     console.error('[vehicleApi]', err)
     return { status: 'error', vehicle: null, totalPajak: 0, message: 'Gagal menghubungi server. Periksa koneksi internet Anda.' }

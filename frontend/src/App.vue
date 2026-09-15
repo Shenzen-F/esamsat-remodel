@@ -346,20 +346,20 @@ const handleGenerateKode = () => {
  */
 const handlePaymentSuccess = (nopolClean, kodeBayar) => {
   if (currentVehicle.value) {
-    const totalPajak = calculateTotalPajak(currentVehicle.value.rincianPajak)
+    const totalPajak = calculateTotalPajak(currentVehicle.value.pajak)
 
     const updated = {
       ...currentVehicle.value,
       status: 'LUNAS',
-      riwayat: [
+      riwayatPembayaran: [
         {
-          tglBayar: new Date().toLocaleDateString('id-ID') + ' - Baru Saja',
-          kodeBayar: kodeBayar,
-          metode: 'Bank Aceh Syariah Online',
-          nominal: totalPajak,
-          status: 'Berhasil'
+          tanggalBayar: new Date().toLocaleDateString('id-ID') + ' - Baru Saja',
+          noReff: kodeBayar,
+          metodePembayaran: 'Bank Aceh Syariah Online',
+          total: totalPajak,
+          lokasiPembayaran: 'Online'
         },
-        ...currentVehicle.value.riwayat
+        ...(currentVehicle.value.riwayatPembayaran || [])
       ]
     }
     currentVehicle.value = updated
@@ -383,8 +383,8 @@ const handlePaymentSuccess = (nopolClean, kodeBayar) => {
  */
 const handleShowReceipt = (vehicle, totalPajak) => {
   let kodeBayar = '-'
-  if (vehicle.riwayat && vehicle.riwayat.length > 0) {
-    kodeBayar = vehicle.riwayat[0].kodeBayar || '-'
+  if (vehicle.riwayatPembayaran && vehicle.riwayatPembayaran.length > 0) {
+    kodeBayar = vehicle.riwayatPembayaran[0].noReff || '-'
   } else {
     const paidRecord = getPaidVehicles()[vehicle.nopolClean]
     if (paidRecord) {
@@ -475,7 +475,7 @@ const onBackToHome = () => {
       <PaymentModal
         v-if="showModal && currentVehicle"
         :vehicle="currentVehicle"
-        :total-pajak="calculateTotalPajak(currentVehicle.rincianPajak)"
+        :total-pajak="calculateTotalPajak(currentVehicle.pajak)"
         @close="showModal = false"
         @payment-success="handlePaymentSuccess"
       />

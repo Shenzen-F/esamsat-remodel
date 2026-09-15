@@ -8,32 +8,41 @@
 // ==========================================
 
 export interface CekPajakRequest {
+  nopol: string;
   nik: string;
-  nopolAngka: string;
-  nopolSeri: string;
-  noRangkaLast5: string;
+  rangka_last5: string;
 }
 
 export interface Kendaraan {
-  nomorPolisi: string;
+  nopol: string;
   nik: string;
   jenis: string;
   merek: string;
   model: string;
-  tahun: number;
+  tipe: string;
+  tahun: string; // the spec says "2007" which is string or number, let's use string
   warna: string;
-  masaBerlakuStnk: string;
-  tanggalJatuhTempo: string;
+  sdStnk: string;
+  sdNotice: string;
 }
 
 export interface Pajak {
   pkb: number;
-  opsenPkb: number;
-  dendaPkb: number;
-  dendaOpsenPkb: number;
-  swdkllj: number;
-  DendaSwdkllj: number;
-  biayaAdminStnkPlat: number;
+  opkb: number;
+  dpkb: number;
+  odpkb: number;
+  swd: number;
+  dswd: number;
+  total: number;
+  tglTtp: string;
+  sdNoticeYad: string;
+}
+
+export interface RiwayatPembayaran {
+  tanggalBayar: string;
+  lokasiPembayaran: string;
+  metodePembayaran: string;
+  noReff: string;
   total: number;
 }
 
@@ -41,16 +50,13 @@ export interface CekPajakResponse {
   success: boolean;
   message: string;
   data?: {
-    /**
-     * 1 = Positif: Tampilkan semua data, user belum bayar, bisa generate kode bayar.
-     * 2 = Negatif: Tampilkan data, tapi tombol generate kode bayar mati/hilang (karena sudah dibayar).
-     * 3 = Negatif: Jangan tampilkan data (karena input tidak valid / data tidak ditemukan).
-     */
     statusCode: 1 | 2 | 3;
     statusText: string;
     deskripsi?: string;
     kendaraan?: Kendaraan;
     pajak?: Pajak;
+    noReff?: string;
+    riwayatPembayaran?: RiwayatPembayaran[];
   };
 }
 
@@ -58,7 +64,8 @@ export interface KodeBayarResponse {
   success: boolean;
   message: string;
   data?: {
-    kodeBayar: string;
+    kd_bayar: string;
+    sse_subsribe: string;
   };
 }
 
