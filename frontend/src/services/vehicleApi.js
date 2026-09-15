@@ -16,7 +16,7 @@ import { MOCK_VEHICLES, calculateTotalPajak } from '../data/mockData'
 const USE_MOCK = true
 
 /** Base URL API backend. Digunakan saat USE_MOCK = false. */
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.esamsat-aceh.go.id/v1'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.samsatdigital.net'
 
 // ─── TIPE HASIL ───────────────────────────────────────────────────────────────
 /**
@@ -128,64 +128,120 @@ const searchMock = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
  * Transform response JSON backend → format Vehicle aplikasi.
  * Sesuaikan mapping field di fungsi ini jika struktur API backend berbeda.
  */
-const transformResponse = (apiData, inputNik) => ({
-  nopol:        apiData.nopol,
-  nopolClean:   (apiData.nopol || '').replace(/\s+/g, '').toUpperCase(),
-  namaPemilik:  apiData.nama_pemilik  || apiData.namaPemilik  || '-',
-  nik:          inputNik              || apiData.nik           || '-',
-  nikMasked:    inputNik ? inputNik.substring(0, 4) + '**********' + inputNik.slice(-2) : (apiData.nik_masked || '-'),
-  jenisMerek:   apiData.jenis_merek   || apiData.jenisMerek   || '-',
-  modelTahun:   apiData.model_tahun   || apiData.modelTahun   || '-',
-  warna:        apiData.warna         || '-',
-  noRangka:     apiData.no_rangka     || apiData.noRangka      || '-',
-  noMesin:      apiData.no_mesin      || apiData.noMesin       || '-',
-  noRangkaLast5: (apiData.no_rangka || '').slice(-5),
-  masaBerlakuStnk: apiData.masa_berlaku   || apiData.masaBerlakuStnk || '-',
-  tglJatuhTempo:   apiData.tgl_jatuh_tempo || apiData.tglJatuhTempo  || '-',
-  status:       apiData.status        || 'BELUM BAYAR',
-  rincianPajak: {
-    pkb:               apiData.pajak?.pkb ?? 0,
-    opsenPkb:          apiData.pajak?.opsen_pkb          ?? apiData.pajak?.opsenPkb          ?? 0,
-    dendaPkb:          apiData.pajak?.denda_pkb          ?? apiData.pajak?.dendaPkb          ?? 0,
-    dendaOpsenPkb:     apiData.pajak?.denda_opsen_pkb    ?? apiData.pajak?.dendaOpsenPkb    ?? 0,
-    swdkllj:           apiData.pajak?.swdkllj            ?? 0,
-    opsenDendaSwdkllj: apiData.pajak?.opsen_denda_swdkllj ?? apiData.pajak?.opsenDendaSwdkllj ?? 0,
-    biayaAdmin:        apiData.pajak?.biaya_admin        ?? apiData.pajak?.biayaAdmin        ?? 0,
-  },
-  riwayat: (apiData.riwayat || []).map((r) => ({
-    tglBayar:    r.tgl_bayar    || r.tglBayar    || '-',
-    masaBerlaku: r.masa_berlaku || r.masaBerlaku  || '-',
-    kodeBayar:   r.kode_bayar   || r.kodeBayar   || '-',
-    metode:      r.metode       || '-',
-    nominal:     r.nominal      || 0,
-    status:      r.status       || 'Berhasil',
-  })),
-})
+const transformResponse = (apiData, inputNik) => {
+  const k = apiData.kendaraan || {}
+  const p = apiData.pajak || {}
+
+  return {
+    nopol:        k.nopol || '-',
+    nopolClean:   (k.nopol || '').replace(/\\s+/g, '').toUpperCase(),
+    namaPemilik:  '-', // Tidak ada di spec
+    nik:          inputNik || k.nik || '-',
+    nikMasked:    inputNik ? inputNik.substring(0, 4) + '**********' + inputNik.slice(-2) : '-',
+    jenisMerek:   `${k.jenis || ''} / ${k.merek || '-'}`.trim(),
+    modelTahun:   `${k.model || ''} / ${k.tahun || '-'}`.trim(),
+    warna:        k.warna || '-',
+    noRangka:     '-', // Tidak ada di spec
+    noMesin:      '-', // Tidak ada di spec
+    noRangkaLast5: '-', // Tidak ada di spec
+    masaBerlakuStnk: k.sdStnk || '-',
+    tglJatuhTempo:   k.sdNotice  || '-',
+    status:       'BELUM BAYAR',
+    rincianPajak: {
+      pkb:               p.pkb ?? 0,
+      opsenPkb:          p.opkb ?? 0,
+      dendaPkb:          p.dpkb ?? 0,
+      dendaOpsenPkb:     p.odpkb ?? 0,
+      swdkllj:           p.swd ?? 0,
+      opsenDendaSwdkllj: p.dswd ?? 0,
+      biayaAdmin:        0, // Tidak ada di spec
+    },
+    riwayat: (apiData.riwayatPembayaran || []).map((r) => ({
+      tglBayar:    r.tanggalBayar || '-',
+      masaBerlaku: '-', // Tidak ada di spec
+      kodeBayar:   r.noReff || '-',
+      metode:      r.metodePembayaran || '-',
+      nominal:     r.total || 0,
+      status:      'Berhasil',
+    })),
+    noReff: apiData.noReff || null
+  }
+}
 
 const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
   try {
-    const response = await fetch(API_BASE_URL + '/cek-pajak', {
+    const nopol = ('BL' + nopolAngka + (nopolSeri || '')).replace(/\\s+/g, '').toUpperCase()
+    const response = await fetch(API_BASE_URL + '/sb/inq/sod/info', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${getToken()}`,  // aktifkan jika perlu auth
       },
-      body: JSON.stringify({ nik, nopol_angka: nopolAngka, nopol_seri: nopolSeri, no_rangka_last5: noRangkaLast5 }),
+      body: JSON.stringify({ 
+        nopol: nopol,
+        nik: nik,
+        rangka_last5: noRangkaLast5
+      }),
     })
-
-    if (response.status === 404) {
-      const vehicle = buildNotFoundVehicle({ nik, nopolAngka, nopolSeri, noRangkaLast5 })
-      return { status: 'notfound', vehicle, totalPajak: 0, message: 'Data kendaraan tidak ditemukan.' }
-    }
 
     if (!response.ok) throw new Error('HTTP ' + response.status)
 
-    const apiData = await response.json()
-    const vehicle = transformResponse(apiData, nik)
-    return { status: 'found', vehicle, totalPajak: calculateTotalPajak(vehicle.rincianPajak), message: 'Data ditemukan untuk kendaraan ' + vehicle.nopol }
+    const responseBody = await response.json()
+    
+    // Status Code 3: Data Not Found
+    if (responseBody.data?.statusCode === 3) {
+      const vehicle = buildNotFoundVehicle({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) // Assuming buildNotFoundVehicle is available
+      return { status: 'notfound', vehicle, totalPajak: 0, message: responseBody.data?.statusText || 'Data kendaraan tidak ditemukan.' }
+    }
+    
+    // Status Code 2: Validasi Pembayaran (e.g., Ganti Plat)
+    if (responseBody.data?.statusCode === 2) {
+      return { status: 'error', vehicle: null, totalPajak: 0, message: responseBody.data?.deskripsi || 'Validasi Pembayaran' }
+    }
+
+    if (!responseBody.success || responseBody.data?.statusCode !== 1) {
+      return { status: 'error', vehicle: null, totalPajak: 0, message: responseBody.message || 'Terjadi kesalahan' }
+    }
+
+    const vehicle = transformResponse(responseBody.data, nik)
+    return { status: 'found', vehicle, totalPajak: calculateTotalPajak(vehicle.rincianPajak), message: responseBody.data?.deskripsi || 'Data ditemukan' }
   } catch (err) {
     console.error('[vehicleApi]', err)
     return { status: 'error', vehicle: null, totalPajak: 0, message: 'Gagal menghubungi server. Periksa koneksi internet Anda.' }
+  }
+}
+
+// ─── GENERATE KODE BAYAR (API REAL) ───────────────────────────────────────────
+export const generateKodeBayarApi = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5, noReff }) => {
+  try {
+    const nopol = ('BL' + nopolAngka + (nopolSeri || '')).replace(/\\s+/g, '').toUpperCase()
+    const response = await fetch(API_BASE_URL + '/sb/inq/sod/kode_bayar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        nopol: nopol,
+        nik: nik,
+        rangka_last5: noRangkaLast5,
+        no_reff: noReff
+      }),
+    })
+
+    if (!response.ok) throw new Error('HTTP ' + response.status)
+
+    const responseBody = await response.json()
+    
+    if (!responseBody.success) {
+      return { success: false, message: responseBody.message || 'Gagal generate kode bayar' }
+    }
+
+    return { 
+      success: true, 
+      data: responseBody.data 
+    }
+  } catch (err) {
+    console.error('[vehicleApi generateKodeBayar]', err)
+    return { success: false, message: 'Gagal menghubungi server.' }
   }
 }
 
