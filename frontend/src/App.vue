@@ -9,7 +9,7 @@ import PaymentSuccess from './components/PaymentSuccess.vue'
 import InfoSection from './components/InfoSection.vue'
 import Footer from './components/Footer.vue'
 import { calculateTotalPajak } from './data/mockData'
-import { searchVehicle } from './services/vehicleApi'
+import { searchVehicle, generateKodeBayar } from './services/vehicleApi'
 const showLanding = ref(true)
 const activeTab = ref('beranda')
 const resultsRef = ref(null)
@@ -228,6 +228,7 @@ const handleSearch = async () => {
   })
 
   if (result.status === 'error') {
+    triggerToast(result.message || 'Gagal mengambil data kendaraan. Silakan coba lagi.')
     return
   }
 
@@ -310,7 +311,7 @@ const handleReset = () => {
 /**
  * Membuka pop-up (modal) pembayaran untuk membuat kode virtual account/kode bayar.
  */
-const handleGenerateKode = () => {
+const handleGenerateKode = async () => {
   const vehicle = currentVehicle.value
   if (!vehicle) return
   const cleanNopol = vehicle.nopolClean
@@ -318,14 +319,37 @@ const handleGenerateKode = () => {
   // Reuse existing kode or generate a new one
   const allKodes = getStoredKodeBayar()
   let kode = allKodes[cleanNopol]
+  let sseSubscribe = sessionStorage.getItem(`sse_${cleanNopol}`)
+
   if (!kode) {
-    kode = '982' + Math.floor(100000001 + Math.random() * 899999999)
+    isSearching.value = true // Gunakan overlay loading yang sama
+    const res = await generateKodeBayar({
+      nik: formData.nik,
+      nopolAngka: formData.nopolAngka,
+      nopolSeri: formData.nopolSeri,
+      noRangkaLast5: formData.noRangkaLast5,
+      noReff: vehicle.noReff
+    })
+    isSearching.value = false
+
+    if (!res.success) {
+      toastMessage.value = res.message || 'Gagal membuat kode bayar'
+      triggerToast()
+      return
+    }
+
+    kode = res.data.kd_bayar
+    sseSubscribe = res.data.sse_subsribe
+    
     allKodes[cleanNopol] = kode
     localStorage.setItem(KODE_BAYAR_KEY, JSON.stringify(allKodes))
   }
 
   // Sync to sessionStorage for PaymentModal
   sessionStorage.setItem(`kodebayar_${cleanNopol}`, kode)
+  if (sseSubscribe) {
+    sessionStorage.setItem(`sse_${cleanNopol}`, sseSubscribe)
+  }
 
   // Also persist inside the searchedVehicles record
   const searchedVehicles = getSearchedVehicles()

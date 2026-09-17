@@ -9,6 +9,13 @@ export default defineConfig({
 
   server: {
     host: true,
-    allowedHosts: true
+    allowedHosts: true,
+    proxy: {
+      '/api-backend': {
+        target: 'https://api.samsatdigital.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api-backend/, '')
+      }
+    }
   }
 })

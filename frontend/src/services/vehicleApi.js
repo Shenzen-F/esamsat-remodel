@@ -13,10 +13,10 @@ import { MOCK_VEHICLES, calculateTotalPajak } from '../data/mockData'
 // ─── KONFIGURASI ──────────────────────────────────────────────────────────────
 
 /** Toggle mock (true) vs API real (false). Ubah di sini saja saat migrasi. */
-const USE_MOCK = true
+const USE_MOCK = false
 
 /** Base URL API backend. Digunakan saat USE_MOCK = false. */
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.samsatdigital.net'
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api-backend' : 'https://api.samsatdigital.net')
 
 // ─── TIPE HASIL ───────────────────────────────────────────────────────────────
 /**
@@ -44,10 +44,10 @@ const generateDummyVehicle = ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => 
   const seri = nopolSeri ? ' ' + nopolSeri.toUpperCase() : ''
   const nopol = ('BL ' + nopolAngka + seri).trim()
   const nopolClean = nopol.replace(/\s+/g, '').toUpperCase()
-  
+
   const pkb = Math.floor(Math.random() * (4000000 - 500000 + 1) + 500000)
   const swd = 35000
-  
+
   return {
     statusCode: 1,
     statusText: 'OK',
@@ -138,7 +138,7 @@ const searchMock = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
  */
 const transformResponse = (apiData, inputNik) => {
   const k = apiData.kendaraan || {}
-  
+
   return {
     statusCode: apiData.statusCode,
     statusText: apiData.statusText,
@@ -156,29 +156,41 @@ const transformResponse = (apiData, inputNik) => {
 
 const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
   try {
-    const nopol = ('BL' + nopolAngka + (nopolSeri || '')).replace(/\\s+/g, '').toUpperCase()
+    const nopol = ('BL' + nopolAngka + (nopolSeri || '')).replace(/\s+/g, '').toUpperCase()
+    const payload = {
+      nopol: nopol,
+      nik: nik.replace(/\s+/g, ''),
+      rangka_last5: noRangkaLast5.replace(/\s+/g, '')
+    }
+    console.log('[searchReal] Sending payload:', payload)
+
     const response = await fetch(API_BASE_URL + '/sb/inq/sod/info', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ 
-        nopol: nopol,
-        nik: nik,
-        rangka_last5: noRangkaLast5
-      }),
+      body: JSON.stringify(payload),
     })
 
-    if (!response.ok) throw new Error('HTTP ' + response.status)
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}))
+      console.error('[searchReal] HTTP', response.status, errBody)
+      // 400 biasanya berarti validasi format gagal atau data tidak ada di server
+      if (response.status === 400) {
+        return { status: 'error', vehicle: null, totalPajak: 0, message: 'Server tidak dapat memproses data. Pastikan NIK, Nomor Polisi, dan Nomor Rangka sudah benar dan terdaftar di Samsat.' }
+      }
+      return { status: 'error', vehicle: null, totalPajak: 0, message: 'Server tidak merespon. Silakan coba beberapa saat lagi.' }
+    }
 
     const responseBody = await response.json()
-    
+    console.log('[searchReal] Response:', responseBody)
+
     // Status Code 3: Data Not Found
     if (responseBody.data?.statusCode === 3) {
-      const vehicle = buildNotFoundVehicle({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) // Assuming buildNotFoundVehicle is available
+      const vehicle = buildNotFoundVehicle({ nik, nopolAngka, nopolSeri, noRangkaLast5 })
       return { status: 'notfound', vehicle, totalPajak: 0, message: responseBody.data?.statusText || 'Data kendaraan tidak ditemukan.' }
     }
-    
+
     // Status Code 2: Validasi Pembayaran (e.g., Ganti Plat)
     if (responseBody.data?.statusCode === 2) {
       return { status: 'error', vehicle: null, totalPajak: 0, message: responseBody.data?.deskripsi || 'Validasi Pembayaran' }
@@ -199,31 +211,34 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
 // ─── GENERATE KODE BAYAR (API REAL) ───────────────────────────────────────────
 export const generateKodeBayarApi = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5, noReff }) => {
   try {
-    const nopol = ('BL' + nopolAngka + (nopolSeri || '')).replace(/\\s+/g, '').toUpperCase()
+    const nopol = ('BL' + nopolAngka + (nopolSeri || '')).replace(/\s+/g, '').toUpperCase()
+    const payload = {
+      nopol: nopol,
+      nik: nik.replace(/\s+/g, ''),
+      rangka_last5: noRangkaLast5.replace(/\s+/g, ''),
+      no_reff: noReff
+    }
+    console.log('[generateKodeBayarApi] Sending payload:', payload)
+
     const response = await fetch(API_BASE_URL + '/sb/inq/sod/kode_bayar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ 
-        nopol: nopol,
-        nik: nik,
-        rangka_last5: noRangkaLast5,
-        no_reff: noReff
-      }),
+      body: JSON.stringify(payload),
     })
 
     if (!response.ok) throw new Error('HTTP ' + response.status)
 
     const responseBody = await response.json()
-    
+
     if (!responseBody.success) {
       return { success: false, message: responseBody.message || 'Gagal generate kode bayar' }
     }
 
-    return { 
-      success: true, 
-      data: responseBody.data 
+    return {
+      success: true,
+      data: responseBody.data
     }
   } catch (err) {
     console.error('[vehicleApi generateKodeBayar]', err)
@@ -242,11 +257,23 @@ export const generateKodeBayarApi = async ({ nik, nopolAngka, nopolSeri, noRangk
  */
 export const searchVehicle = (params) => USE_MOCK ? searchMock(params) : searchReal(params)
 
+/**
+ * Generate kode bayar (virtual account)
+ * Otomatis memilih mock atau real berdasarkan USE_MOCK.
+ */
+export const generateKodeBayar = async (params) => {
+  if (USE_MOCK) {
+    const randomCode = '982' + Math.floor(100000001 + Math.random() * 899999999)
+    return { success: true, data: { kd_bayar: randomCode, sse_subsribe: 'mock-sse-id-123' } }
+  }
+  return generateKodeBayarApi(params)
+}
+
 // ─── LOKASI E-SAMSAT ACEH ───────────────────────────────────────────────────
 const MOCK_LOCATIONS = [
   { type: 'STATIC', nama: 'Samsat Induk Banda Aceh', alamat: 'Jl. T. Nyak Arief No. 12, Banda Aceh', latitude: 5.5501, longitude: 95.3192 },
   { type: 'STATIC', nama: 'Samsat Induk Lhokseumawe', alamat: 'Jl. Merdeka No. 45, Lhokseumawe', latitude: 5.1801, longitude: 97.1507 },
-  
+
   { type: 'MOBILE', nama: 'Samsat Keliling Banda Aceh 1', hariOperasi: 'Senin - Kamis', jadwalOperasi: '08:30 - 14:00 WIB', tempatOperasi: 'Lapangan Blang Padang' },
   { type: 'MOBILE', nama: 'Samsat Keliling Banda Aceh 2', hariOperasi: 'Jumat', jadwalOperasi: '08:30 - 11:30 WIB', tempatOperasi: 'Masjid Raya Baiturrahman' },
   { type: 'MOBILE', nama: 'Samsat Keliling Lhokseumawe', hariOperasi: 'Selasa - Rabu', jadwalOperasi: '09:00 - 13:00 WIB', tempatOperasi: 'Terminal Lhokseumawe' },

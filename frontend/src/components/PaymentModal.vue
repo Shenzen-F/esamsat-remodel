@@ -25,7 +25,6 @@ const props = defineProps({
 const emit = defineEmits(['close', 'payment-success'])
 
 const copied = ref(false)
-const isProcessing = ref(false)
 const isSuccess = ref(false)
 const kodeBayar = ref('')
 // Determine if this vehicle has already been paid
@@ -59,21 +58,19 @@ const sseInstance = ref(null)
 
 // KELOLA SSE (Server-Sent Events)
 // Aktifkan flag ini (ubah menjadi true) jika endpoint SSE di backend sudah siap digunakan
-const USE_REAL_SSE = ref(false)
-
 /**
  * Inisialisasi koneksi Server-Sent Events (SSE) untuk mendapatkan status pembayaran
  * dari backend secara real-time.
- * @param {string} code - Kode bayar / virtual account.
+ * @param {string} sseSubscribeId - ID subscribe SSE dari API.
  */
-const initPaymentStatusSSE = (code) => {
-  if (!USE_REAL_SSE.value) {
-    console.log("[SSE Demo] SSE dinonaktifkan. Gunakan tombol simulasi untuk demo pembayaran.")
+const initPaymentStatusSSE = (sseSubscribeId) => {
+  if (!sseSubscribeId) {
+    console.warn("[SSE] ID sse_subsribe tidak ditemukan, SSE tidak dapat dijalankan.")
     return
   }
 
-  // TODO: Sesuaikan URL backend SSE Anda di bawah ini
-  const sseUrl = `http://localhost:3000/api/payment-status/sse?kodeBayar=${code}`
+  // URL SSE sesuai dengan spesifikasi API Samsat Digital
+  const sseUrl = `https://notify.samsatdigital.net/sse/streams?id=${sseSubscribeId}`
   console.log(`[SSE] Menghubungkan ke ${sseUrl}...`)
 
   try {
@@ -87,7 +84,7 @@ const initPaymentStatusSSE = (code) => {
         // Konfigurasi kondisi penentu kelunasan sesuai format JSON dari backend Anda
         if (data.status === 'LUNAS' || data.status === 'SUCCESS') {
           isSuccess.value = true
-          emit('payment-success', props.vehicle.nopolClean, code)
+          emit('payment-success', props.vehicle.nopolClean, kodeBayar.value)
           closeSSE()
         }
       } catch (err) {
@@ -128,19 +125,52 @@ onMounted(() => {
   }
 
   const storageKey = `kodebayar_${props.vehicle.nopolClean}`
+  const sseKey = `sse_${props.vehicle.nopolClean}`
+  let currentSseId = sessionStorage.getItem(sseKey)
+
   if (!kodeBayar.value) {
     const savedCode = sessionStorage.getItem(storageKey)
     if (savedCode) {
       kodeBayar.value = savedCode
     } else {
-      const randomCode = '982' + Math.floor(100000001 + Math.random() * 899999999)
+      // Sesuai spesifikasi API: kd_bayar (contoh: 8125473399598) dan sse_subsribe (contoh: once-s-8125473399598)
+      const randomCode = '812' + Math.floor(1000000000 + Math.random() * 8999999999)
       kodeBayar.value = randomCode
+      currentSseId = `once-s-${randomCode}`
+      
       sessionStorage.setItem(storageKey, randomCode)
+      sessionStorage.setItem(sseKey, currentSseId)
+    }
+  }
+
+  if (!currentSseId) {
+    currentSseId = `once-s-${kodeBayar.value}`
+    sessionStorage.setItem(sseKey, currentSseId)
+  }
+
+  console.log(`\n===========================================`)
+  console.log(`[DEV] KODE BAYAR GENERATED: ${kodeBayar.value}`)
+  console.log(`[DEV] SSE SUBSCRIBE ID: ${currentSseId}`)
+  console.log(`[DEV] Untuk simulasi manual sukses bayar dari konsol, ketik:`)
+  console.log(`%cwindow.simulatePayment('${currentSseId}')`, 'background: #222; color: #bada55; padding: 4px; border-radius: 4px; font-weight: bold;')
+  console.log(`===========================================\n`)
+
+  // Global function for manual trigger via console
+  window.simulatePayment = (sseId) => {
+    if (sseId === currentSseId) {
+      console.log(`[DEV] Pembayaran manual berhasil untuk SSE ID: ${sseId}`)
+      isSuccess.value = true
+      emit('payment-success', props.vehicle.nopolClean, kodeBayar.value)
+      closeSSE()
+      return "Berhasil mensimulasikan pembayaran!"
+    } else {
+      console.warn(`[DEV] Gagal: SSE ID tidak cocok. Diharapkan: ${currentSseId}, Dimasukkan: ${sseId}`)
+      return "Gagal mensimulasikan pembayaran. SSE ID tidak cocok."
     }
   }
 
   // Mulai dengarkan status pembayaran lewat SSE setelah kode bayar dibuat
-  initPaymentStatusSSE(kodeBayar.value)
+  initPaymentStatusSSE(currentSseId)
 
   countdownTimer = setInterval(() => {
     if (countdown.value > 0) {
@@ -181,19 +211,6 @@ const handleCopy = () => {
   setTimeout(() => {
     copied.value = false
   }, 2000)
-}
-
-/**
- * [HANYA UNTUK DEMO] Mensimulasikan proses pembayaran berhasil secara manual.
- * Akan mengirim (emit) event 'payment-success' ke komponen induk (App.vue).
- */
-const handleSimulatePayment = () => {
-  isProcessing.value = true
-  setTimeout(() => {
-    isProcessing.value = false
-    isSuccess.value = true
-    emit('payment-success', props.vehicle.nopolClean, kodeBayar.value)
-  }, 600)
 }
 
 // Show receipt directly for already paid vehicle
@@ -403,17 +420,6 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
           </div>
         </div>
 
-        <div style="margin-bottom: 1.5rem">
-          <button
-            class="btn-primary"
-            style="width: 100%; padding: 0.85rem"
-            @click="handleSimulatePayment"
-            :disabled="isProcessing"
-          >
-            <Sparkles :size="18" />
-            {{ isProcessing ? 'Memproses Transaksi...' : 'Simulasi Bayar Sekarang (Demo)' }}
-          </button>
-        </div>
       </div>
 
       <div v-else style="text-align: center; padding: 0.5rem 0">
