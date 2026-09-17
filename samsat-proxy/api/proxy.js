@@ -1,40 +1,48 @@
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
+
 export default async function handler(req, res) {
-  // 1. Tangani preflight request (OPTIONS) dari browser
+  // 1. Set CORS headers untuk SEMUA request (termasuk OPTIONS preflight)
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST,PUT,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+
+  // 2. Tangani preflight request (OPTIONS) dari browser
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Bisa diubah ke 'https://shenzen-f.github.io' untuk lebih aman
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
     return res.status(200).end();
   }
 
-  // 2. Ambil path dari URL aslinya
-  // Contoh: Jika proxy kita dipanggil dengan /api/proxy?path=/sb/inq/sod/info
-  // Maka targetUrl = https://api.samsatdigital.net/sb/inq/sod/info
+  // 3. Ambil path dari query parameter
   const targetPath = req.query.path || '';
-  const targetUrl = `https://api.samsatdigital.net${targetPath}`;
+  const targetUrl = `https://api.samsatdigital.net${targetPath.startsWith('/') ? '' : '/'}${targetPath}`;
 
   try {
-    // 3. Forward request ke API Samsat yang asli
-    const fetchOptions = {
+    // 4. Siapkan body - bisa berupa string atau object
+    let bodyContent = undefined;
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      if (typeof req.body === 'string') {
+        bodyContent = req.body;
+      } else if (req.body && typeof req.body === 'object') {
+        bodyContent = JSON.stringify(req.body);
+      }
+    }
+
+    // 5. Forward request ke API Samsat yang asli
+    const response = await fetch(targetUrl, {
       method: req.method,
       headers: {
-        'Content-Type': req.headers['content-type'] || 'application/json',
+        'Content-Type': 'application/json',
       },
-      // Jangan mengirim body jika method-nya GET atau HEAD
-      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
-    };
+      body: bodyContent,
+    });
 
-    const response = await fetch(targetUrl, fetchOptions);
     const data = await response.json().catch(() => ({}));
-
-    // 4. Set CORS header di response agar tidak diblokir browser
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*'); 
-    
     return res.status(response.status).json(data);
   } catch (error) {
-    res.setHeader('Access-Control-Allow-Origin', '*'); 
     return res.status(500).json({ success: false, message: 'Proxy Error', error: error.message });
   }
 }
