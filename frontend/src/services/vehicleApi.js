@@ -16,7 +16,7 @@ import { MOCK_VEHICLES, calculateTotalPajak } from '../data/mockData'
 const USE_MOCK = false
 
 /** Base URL API backend. Digunakan saat USE_MOCK = false. */
-const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api-backend' : 'https://api.samsatdigital.net')
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api-backend' : 'https://samsat-proxy-ce7f54mk6-shenzen.vercel.app')
 
 // ─── TIPE HASIL ───────────────────────────────────────────────────────────────
 /**
