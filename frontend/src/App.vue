@@ -238,35 +238,47 @@ const handleSearch = async () => {
   const searchKey = `${nikInput}|${cleanNopol}|${noRangkaLast5}`
   
   const searchedVehicles = getSearchedVehicles()
-  const searchedRecord = searchedVehicles[searchKey]
-  const paidRecord = getPaidVehicles()[cleanNopol]
+  const paidVehicles = getPaidVehicles()
 
-  if (paidRecord) {
-    currentVehicle.value = paidRecord.vehicle
-  } else if (foundVehicle.status === 'LUNAS') {
-    currentVehicle.value = foundVehicle
-  } else if (searchedRecord) {
-    currentVehicle.value = searchedRecord.vehicle
-  } else {
-    currentVehicle.value = foundVehicle
-    // Store vehicle data without kodeBayar; kode will be generated when user clicks 'Generate Kode Pembayaran'
-    searchedVehicles[searchKey] = {
-      vehicle: foundVehicle,
-      totalPajak: result.totalPajak
+  // === STATUS SERVER SELALU OTORITATIF ===
+  // Bersihkan cache lokal yang tidak konsisten dengan status server
+  if (foundVehicle.statusCode === 1) {
+    // statusCode 1: Siap bayar — hapus cache "sudah bayar" jika ada
+    if (paidVehicles[cleanNopol]) {
+      delete paidVehicles[cleanNopol]
+      localStorage.setItem(PAID_KEY, JSON.stringify(paidVehicles))
     }
-    localStorage.setItem(SEARCHED_KEY, JSON.stringify(searchedVehicles))
+  } else if (foundVehicle.statusCode === 2) {
+    // statusCode 2: Tidak bisa bayar online — hapus semua cache usang (paid + kode bayar)
+    if (paidVehicles[cleanNopol]) {
+      delete paidVehicles[cleanNopol]
+      localStorage.setItem(PAID_KEY, JSON.stringify(paidVehicles))
+    }
+    const allKodes = getStoredKodeBayar()
+    if (allKodes[cleanNopol]) {
+      delete allKodes[cleanNopol]
+      localStorage.setItem(KODE_BAYAR_KEY, JSON.stringify(allKodes))
+    }
+    sessionStorage.removeItem(`kodebayar_${cleanNopol}`)
+    sessionStorage.removeItem(`sse_${cleanNopol}`)
   }
-  // Auto-open payment modal only if user has previously generated a kode bayar
-  // (stored in localStorage, persists across window close/open)
-  if (!paidRecord && foundVehicle.status !== 'LUNAS') {
+
+  // Selalu gunakan data dari API (server otoritatif)
+  currentVehicle.value = foundVehicle
+  searchedVehicles[searchKey] = {
+    vehicle: foundVehicle,
+    totalPajak: result.totalPajak
+  }
+  localStorage.setItem(SEARCHED_KEY, JSON.stringify(searchedVehicles))
+
+  // Auto-open payment modal hanya jika statusCode 1 dan ada kode bayar tersimpan
+  if (foundVehicle.statusCode === 1) {
     const allKodes = getStoredKodeBayar()
     const savedKode = allKodes[cleanNopol]
     if (savedKode) {
-      // Sync to sessionStorage so PaymentModal can pick it up
       sessionStorage.setItem(`kodebayar_${cleanNopol}`, savedKode)
       showModal.value = true
     }
-    // If no savedKode → user never clicked generate, just show vehicle details
   }
 
   nextTick(() => {
@@ -314,6 +326,13 @@ const handleReset = () => {
 const handleGenerateKode = async () => {
   const vehicle = currentVehicle.value
   if (!vehicle) return
+
+  // GUARD: Hanya izinkan generate kode bayar jika statusCode === 1 (server bilang bisa bayar online)
+  if (vehicle.statusCode !== 1) {
+    triggerToast('Kendaraan ini tidak memenuhi syarat pembayaran online.')
+    return
+  }
+
   const cleanNopol = vehicle.nopolClean
 
   // Reuse existing kode or generate a new one
@@ -379,9 +398,9 @@ const handlePaymentSuccess = (nopolClean, kodeBayar) => {
         {
           tanggalBayar: new Date().toLocaleDateString('id-ID') + ' - Baru Saja',
           noReff: kodeBayar,
-          metodePembayaran: 'Bank Aceh Syariah Online',
+          metodePembayaran: 'cashless',
           total: totalPajak,
-          lokasiPembayaran: 'Online'
+          lokasiPembayaran: 'e-Samsat Online'
         },
         ...(currentVehicle.value.riwayatPembayaran || [])
       ]

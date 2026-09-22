@@ -9,9 +9,10 @@
   @emits back-to-home - Dikirim saat pengguna menekan tombol "Kembali ke Beranda"
 -->
 <script setup>
+import { computed } from 'vue'
 import { ShieldCheck, Home, CheckCircle2 } from '@lucide/vue'
 
-defineProps({
+const props = defineProps({
   /** Data lengkap kendaraan yang sudah dibayar (nopol, pemilik, merek, dll.) */
   vehicle: { type: Object, required: true },
   /** Total nominal pajak yang telah dilunasi (dalam Rupiah) */
@@ -23,11 +24,29 @@ defineProps({
 const emit = defineEmits(['back-to-home'])
 
 /**
+ * Tanggal bayar dari riwayat atau tanggal saat ini.
+ */
+const tanggalBayarFormatted = computed(() => {
+  if (props.vehicle?.riwayatPembayaran && props.vehicle.riwayatPembayaran[0]?.tanggalBayar) {
+    return props.vehicle.riwayatPembayaran[0].tanggalBayar
+  }
+  return new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+})
+
+const totalDibayarFinal = computed(() => {
+  if (props.totalPajak > 0) return props.totalPajak
+  if (props.vehicle?.riwayatPembayaran && props.vehicle.riwayatPembayaran[0]?.total) {
+    return props.vehicle.riwayatPembayaran[0].total
+  }
+  return 0
+})
+
+/**
  * Memformat angka menjadi format mata uang Rupiah Indonesia.
  * @param {number} val - Nominal angka yang akan diformat
  * @returns {string} String berformat "Rp X.XXX.XXX"
  */
-const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
+const formatRupiah = (val) => 'Rp ' + (val || 0).toLocaleString('id-ID')
 </script>
 
 <template>
@@ -78,7 +97,7 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
         </div>
         <div class="receipt-field">
           <span class="receipt-label">TANGGAL BAYAR</span>
-          <strong class="receipt-value">{{ new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) }}</strong>
+          <strong class="receipt-value">{{ tanggalBayarFormatted }}</strong>
         </div>
         <div class="receipt-field">
           <span class="receipt-label">5 DIGIT TERAKHIR NO. RANGKA</span>
@@ -92,7 +111,7 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
 
       <div class="receipt-total-row">
         <span>TOTAL DIBAYAR</span>
-        <span>{{ formatRupiah(totalPajak) }}</span>
+        <span>{{ formatRupiah(totalDibayarFinal) }}</span>
       </div>
     </div>
 

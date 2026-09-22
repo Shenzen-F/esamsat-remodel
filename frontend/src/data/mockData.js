@@ -44,7 +44,7 @@ export const MOCK_VEHICLES = [
       {
         tanggalBayar: "12 Mei 2025",
         lokasiPembayaran: "Banda Aceh",
-        metodePembayaran: "Bank Aceh Syariah Mobile",
+        metodePembayaran: "cashless",
         noReff: "982039182301",
         total: 4969800
       }
@@ -84,7 +84,7 @@ export const MOCK_VEHICLES = [
       {
         tanggalBayar: "20 Agustus 2025",
         lokasiPembayaran: "Lhokseumawe",
-        metodePembayaran: "PT Pos Indonesia (PosPay)",
+        metodePembayaran: "cashless",
         noReff: "982039182302",
         total: 8828000
       }
@@ -112,7 +112,7 @@ export const MOCK_VEHICLES = [
       {
         tanggalBayar: "05 Des 2025",
         lokasiPembayaran: "Langsa",
-        metodePembayaran: "Bank Aceh Syariah Mobile",
+        metodePembayaran: "cash",
         noReff: "982039182301",
         total: 783000
       }

@@ -16,7 +16,7 @@ import { MOCK_VEHICLES, calculateTotalPajak } from '../data/mockData'
 const USE_MOCK = false
 
 /** Base URL API backend. Digunakan saat USE_MOCK = false. */
-const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api-backend' : 'https://samsat-proxy.vercel.app')
+const API_BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '/api-backend' : 'https://api.samsatdigital.net')
 
 // ─── TIPE HASIL ───────────────────────────────────────────────────────────────
 /**
@@ -191,9 +191,19 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
       return { status: 'notfound', vehicle, totalPajak: 0, message: responseBody.data?.statusText || 'Data kendaraan tidak ditemukan.' }
     }
 
-    // Status Code 2: Validasi Pembayaran (e.g., Ganti Plat)
+    // Status Code 2: Validasi Pembayaran (e.g., Ganti Plat / Pembayaran Online Tidak Tersedia)
     if (responseBody.data?.statusCode === 2) {
-      return { status: 'error', vehicle: null, totalPajak: 0, message: responseBody.data?.deskripsi || 'Validasi Pembayaran' }
+      const vehicle = transformResponse(responseBody.data, nik)
+      vehicle.statusCode = 2
+      vehicle.canPayOnline = false
+      vehicle.status = 'VALIDASI'
+      vehicle.deskripsi = responseBody.data?.deskripsi || 'Validasi Pembayaran'
+      return { 
+        status: 'found', 
+        vehicle, 
+        totalPajak: calculateTotalPajak(vehicle.pajak), 
+        message: responseBody.data?.deskripsi || 'Validasi Pembayaran' 
+      }
     }
 
     if (!responseBody.success || responseBody.data?.statusCode !== 1) {
@@ -201,6 +211,8 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
     }
 
     const vehicle = transformResponse(responseBody.data, nik)
+    vehicle.statusCode = 1
+    vehicle.canPayOnline = true
     return { status: 'found', vehicle, totalPajak: calculateTotalPajak(vehicle.pajak), message: responseBody.data?.deskripsi || 'Data ditemukan' }
   } catch (err) {
     console.error('[vehicleApi]', err)

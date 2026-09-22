@@ -12,7 +12,8 @@
 -->
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
-import { X, Copy, Check, QrCode, Sparkles, ShieldCheck, ChevronDown, ChevronUp } from '@lucide/vue'
+import { X, Copy, Check, QrCode, Sparkles, ShieldCheck, ChevronDown, ChevronUp, Radio, Wifi } from '@lucide/vue'
+import { useESamsatStore } from '../stores/eSamsatStore'
 
 // Key for storing paid vehicle info
 const PAID_KEY = 'esamsat_paid_vehicles'
@@ -24,9 +25,15 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'payment-success'])
 
+const eSamsatStore = useESamsatStore()
+
 const copied = ref(false)
+const copiedSse = ref(false)
 const isSuccess = ref(false)
 const kodeBayar = ref('')
+const sseSubscribeId = ref('')
+const sseStatus = ref('connecting') // 'connecting' | 'connected' | 'error' | 'success'
+
 // Determine if this vehicle has already been paid
 const hasPaid = computed(() => {
   try {
@@ -56,47 +63,96 @@ const togglePaymentGuide = (type) => {
 
 const sseInstance = ref(null)
 
-// KELOLA SSE (Server-Sent Events)
-// Aktifkan flag ini (ubah menjadi true) jika endpoint SSE di backend sudah siap digunakan
+/**
+ * Handler pemrosesan event pembayaran dari SSE.
+ */
+const handlePaymentSuccessEvent = (rawPayload) => {
+  console.log('[SSE] Pembayaran berhasil diterima:', rawPayload)
+  sseStatus.value = 'success'
+  isSuccess.value = true
+  
+  eSamsatStore.setPaymentStatus('SUCCESS', rawPayload)
+  emit('payment-success', props.vehicle.nopolClean, kodeBayar.value)
+  closeSSE()
+}
+
 /**
  * Inisialisasi koneksi Server-Sent Events (SSE) untuk mendapatkan status pembayaran
  * dari backend secara real-time.
- * @param {string} sseSubscribeId - ID subscribe SSE dari API.
+ * @param {string} subscribeId - ID subscribe SSE dari API.
  */
-const initPaymentStatusSSE = (sseSubscribeId) => {
-  if (!sseSubscribeId) {
-    console.warn("[SSE] ID sse_subsribe tidak ditemukan, SSE tidak dapat dijalankan.")
+const initPaymentStatusSSE = (subscribeId) => {
+  if (!subscribeId) {
+    console.warn('[SSE] ID sse_subsribe tidak ditemukan, SSE tidak dapat dijalankan.')
+    sseStatus.value = 'error'
     return
   }
 
+  sseSubscribeId.value = subscribeId
+  sseStatus.value = 'connecting'
+
   // URL SSE sesuai dengan spesifikasi API Samsat Digital
-  const sseUrl = `https://notify.samsatdigital.net/sse/streams?id=${sseSubscribeId}`
+  const sseUrl = `https://notify.samsatdigital.net/sse/streams?id=${subscribeId}`
   console.log(`[SSE] Menghubungkan ke ${sseUrl}...`)
 
   try {
     sseInstance.value = new EventSource(sseUrl)
 
-    sseInstance.value.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data)
-        console.log("[SSE] Data diterima:", data)
+    sseInstance.value.onopen = () => {
+      console.log(`[SSE] Terhubung ke channel stream: ${subscribeId}`)
+      sseStatus.value = 'connected'
+    }
 
-        // Konfigurasi kondisi penentu kelunasan sesuai format JSON dari backend Anda
-        if (data.status === 'LUNAS' || data.status === 'SUCCESS') {
-          isSuccess.value = true
-          emit('payment-success', props.vehicle.nopolClean, kodeBayar.value)
-          closeSSE()
+    const processMessageData = (rawText) => {
+      try {
+        const data = typeof rawText === 'object' ? rawText : JSON.parse(rawText)
+        console.log('[SSE] Data event diterima:', data)
+
+        // Verifikasi berbagai kemungkinan format sukses pembayaran
+        const isPaid =
+          data.status === 'LUNAS' ||
+          data.status === 'SUCCESS' ||
+          data.status === 'PAID' ||
+          data.statusCode === 1 ||
+          data.success === true ||
+          (data.data && (data.data.status === 'SUCCESS' || data.data.status === 'LUNAS'))
+
+        if (isPaid) {
+          handlePaymentSuccessEvent(data)
         }
       } catch (err) {
-        console.error("[SSE] Gagal mengurai data JSON:", err)
+        // Jika data dikirim berupa teks biasa 'LUNAS' atau 'SUCCESS'
+        const cleanStr = String(rawText || '').trim().toUpperCase()
+        if (cleanStr === 'LUNAS' || cleanStr === 'SUCCESS' || cleanStr === 'PAID') {
+          handlePaymentSuccessEvent({ status: cleanStr })
+        } else {
+          console.log('[SSE] Pesan teks mentah:', rawText)
+        }
       }
     }
 
+    sseInstance.value.onmessage = (event) => {
+      processMessageData(event.data)
+    }
+
+    // Tangani kemungkinan custom event name dari backend
+    sseInstance.value.addEventListener('payment', (event) => {
+      processMessageData(event.data)
+    })
+    sseInstance.value.addEventListener('status', (event) => {
+      processMessageData(event.data)
+    })
+    sseInstance.value.addEventListener('notification', (event) => {
+      processMessageData(event.data)
+    })
+
     sseInstance.value.onerror = (err) => {
-      console.warn("[SSE] Koneksi error/terputus. Mencoba menghubungkan ulang...", err)
+      console.warn('[SSE] Koneksi terputus atau mencoba reconnect...', err)
+      sseStatus.value = 'error'
     }
   } catch (error) {
-    console.error("[SSE] Browser tidak mendukung EventSource atau inisialisasi gagal:", error)
+    console.error('[SSE] Browser tidak mendukung EventSource atau inisialisasi gagal:', error)
+    sseStatus.value = 'error'
   }
 }
 
@@ -105,7 +161,7 @@ const initPaymentStatusSSE = (sseSubscribeId) => {
  */
 const closeSSE = () => {
   if (sseInstance.value) {
-    console.log("[SSE] Menutup koneksi SSE...")
+    console.log('[SSE] Menutup koneksi SSE...')
     sseInstance.value.close()
     sseInstance.value = null
   }
@@ -113,14 +169,12 @@ const closeSSE = () => {
 
 onMounted(() => {
   if (hasPaid.value) {
-    // Vehicle already paid: retrieve stored kodeBayar and mark success
     const paid = JSON.parse(localStorage.getItem(PAID_KEY)) || {}
     const record = paid[props.vehicle.nopolClean]
     if (record && record.kodeBayar) {
       kodeBayar.value = record.kodeBayar
     }
     isSuccess.value = true
-    // No need to start countdown or SSE for already paid
     return
   }
 
@@ -133,7 +187,6 @@ onMounted(() => {
     if (savedCode) {
       kodeBayar.value = savedCode
     } else {
-      // Sesuai spesifikasi API: kd_bayar (contoh: 8125473399598) dan sse_subsribe (contoh: once-s-8125473399598)
       const randomCode = '812' + Math.floor(1000000000 + Math.random() * 8999999999)
       kodeBayar.value = randomCode
       currentSseId = `once-s-${randomCode}`
@@ -148,28 +201,29 @@ onMounted(() => {
     sessionStorage.setItem(sseKey, currentSseId)
   }
 
+  sseSubscribeId.value = currentSseId
+
   console.log(`\n===========================================`)
-  console.log(`[DEV] KODE BAYAR GENERATED: ${kodeBayar.value}`)
-  console.log(`[DEV] SSE SUBSCRIBE ID: ${currentSseId}`)
-  console.log(`[DEV] Untuk simulasi manual sukses bayar dari konsol, ketik:`)
+  console.log(`[DEV] KODE BAYAR: ${kodeBayar.value}`)
+  console.log(`[DEV] SSE SUBSCRIBE CHANNEL ID: ${currentSseId}`)
+  console.log(`[DEV] SSE URL: https://notify.samsatdigital.net/sse/streams?id=${currentSseId}`)
+  console.log(`[DEV] Untuk simulasi pembayaran manual dari Console:`)
   console.log(`%cwindow.simulatePayment('${currentSseId}')`, 'background: #222; color: #bada55; padding: 4px; border-radius: 4px; font-weight: bold;')
   console.log(`===========================================\n`)
 
   // Global function for manual trigger via console
-  window.simulatePayment = (sseId) => {
-    if (sseId === currentSseId) {
-      console.log(`[DEV] Pembayaran manual berhasil untuk SSE ID: ${sseId}`)
-      isSuccess.value = true
-      emit('payment-success', props.vehicle.nopolClean, kodeBayar.value)
-      closeSSE()
-      return "Berhasil mensimulasikan pembayaran!"
+  window.simulatePayment = (sseId, customData = null) => {
+    if (!sseId || sseId === currentSseId || sseId === kodeBayar.value) {
+      console.log(`[DEV] Simulasi event bayar berhasil untuk SSE ID: ${currentSseId}`)
+      handlePaymentSuccessEvent(customData || { status: 'SUCCESS', message: 'Simulasi Pembayaran Berhasil' })
+      return 'Berhasil mensimulasikan pembayaran SSE!'
     } else {
       console.warn(`[DEV] Gagal: SSE ID tidak cocok. Diharapkan: ${currentSseId}, Dimasukkan: ${sseId}`)
-      return "Gagal mensimulasikan pembayaran. SSE ID tidak cocok."
+      return 'Gagal mensimulasikan pembayaran. SSE ID tidak cocok.'
     }
   }
 
-  // Mulai dengarkan status pembayaran lewat SSE setelah kode bayar dibuat
+  // Mulai subscribe status pembayaran lewat SSE
   initPaymentStatusSSE(currentSseId)
 
   countdownTimer = setInterval(() => {
@@ -210,6 +264,18 @@ const handleCopy = () => {
   copied.value = true
   setTimeout(() => {
     copied.value = false
+  }, 2000)
+}
+
+/**
+ * Menyalin channel ID SSE untuk simulasi backend.
+ */
+const handleCopySse = () => {
+  if (!sseSubscribeId.value) return
+  navigator.clipboard.writeText(sseSubscribeId.value)
+  copiedSse.value = true
+  setTimeout(() => {
+    copiedSse.value = false
   }, 2000)
 }
 
@@ -273,6 +339,45 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
             <Copy v-else :size="14" />
             {{ copied ? 'Tersalin!' : 'Salin Kode Bayar' }}
           </button>
+        </div>
+
+        <!-- Real-time SSE Live Status Card -->
+        <div
+          class="sse-status-card"
+          style="
+            margin-top: 0.75rem;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 0.65rem 0.85rem;
+            text-align: left;
+          "
+        >
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.75rem; font-weight: 700;">
+              <span v-if="sseStatus === 'connected'" class="sse-pulse-dot"></span>
+              <span v-else-if="sseStatus === 'connecting'" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #eab308;"></span>
+              <span v-else style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span>
+
+              <span :style="{ color: sseStatus === 'connected' ? '#166534' : (sseStatus === 'connecting' ? '#854d0e' : '#991b1b') }">
+                {{ sseStatus === 'connected' ? 'Monitoring Status Real-time (SSE Aktif)' : (sseStatus === 'connecting' ? 'Menghubungkan ke SSE...' : 'SSE Terputus (Auto Reconnect)') }}
+              </span>
+            </div>
+            <button
+              v-if="sseSubscribeId"
+              type="button"
+              @click="handleCopySse"
+              title="Salin ID SSE untuk publish dari Backend"
+              style="background: transparent; border: none; cursor: pointer; color: #166534; font-size: 0.65rem; display: flex; align-items: center; gap: 0.25rem; font-weight: 600; padding: 0.1rem 0.3rem;"
+            >
+              <Check v-if="copiedSse" :size="12" color="#16a34a" />
+              <Copy v-else :size="12" />
+              {{ copiedSse ? 'ID Tersalin' : 'Salin ID SSE' }}
+            </button>
+          </div>
+          <div style="font-size: 0.68rem; color: #15803d; font-family: monospace; word-break: break-all;">
+            Channel: <strong>{{ sseSubscribeId || 'Menunggu inisialisasi...' }}</strong>
+          </div>
         </div>
 
         <!-- Panduan Pembayaran Dropdown -->
