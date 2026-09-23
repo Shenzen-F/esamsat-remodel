@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api-backend/:match*",
+      "destination": "https://api.samsatdigital.net/:match*"
+    },
+    {
+      "source": "/api-sse/:match*",
+      "destination": "https://notify.samsatdigital.net/:match*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "build": {
+    "env": {
+      "VITE_API_URL": "/api-backend",
+      "VITE_SSE_URL": "/api-sse/sse/streams",
+      "VITE_BASE_PATH": "/",
+      "VITE_APP_TITLE": "e-Samsat Aceh"
+    }
+  }
+}

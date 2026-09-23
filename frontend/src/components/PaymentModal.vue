@@ -92,7 +92,9 @@ const initPaymentStatusSSE = (subscribeId) => {
   sseStatus.value = 'connecting'
 
   // URL SSE sesuai dengan spesifikasi API Samsat Digital
-  const sseBaseUrl = import.meta.env.VITE_SSE_URL || 'https://notify.samsatdigital.net/sse/streams'
+  const sseBaseUrl = import.meta.env.DEV 
+    ? '/api-sse/sse/streams' 
+    : (import.meta.env.VITE_SSE_URL || 'https://notify.samsatdigital.net/sse/streams')
   const sseUrl = `${sseBaseUrl}?id=${subscribeId}`
   console.log(`[SSE] Menghubungkan ke ${sseUrl}...`)
 

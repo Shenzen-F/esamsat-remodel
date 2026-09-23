@@ -18,6 +18,11 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_API_URL || 'https://api.samsatdigital.net',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api-backend/, '')
+        },
+        '/api-sse': {
+          target: env.VITE_SSE_URL || 'https://notify.samsatdigital.net',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api-sse/, '')
         }
       }
     }
