@@ -123,7 +123,7 @@ const isStatusCode2 = computed(() => props.vehicle?.statusCode === 2)
     </div>
 
     <!-- RINCIAN PAJAK KENDARAAN -->
-    <div class="data-card">
+    <div class="data-card" v-if="!isPaid">
       <div class="card-header">
         <FileText :size="20" class="card-icon" />
         <h3 class="card-title">RINCIAN PAJAK KENDARAAN</h3>

@@ -56,7 +56,7 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
       nik: nik.replace(/\s+/g, ''),
       rangka_last5: noRangkaLast5.replace(/\s+/g, '')
     }
-    console.log('[searchReal] Sending payload:', payload)
+    // console.log('[searchReal] Sending payload:', payload)
 
     const response = await fetch(API_BASE_URL + '/sb/inq/sod/info', {
       method: 'POST',
@@ -68,7 +68,7 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
 
     if (!response.ok) {
       const errBody = await response.json().catch(() => ({}))
-      console.error('[searchReal] HTTP', response.status, errBody)
+      // console.error('[searchReal] HTTP', response.status, errBody)
       // 400 biasanya berarti validasi format gagal atau data tidak ada di server
       if (response.status === 400) {
         return { status: 'error', vehicle: null, totalPajak: 0, message: 'Server tidak dapat memproses data. Pastikan NIK, Nomor Polisi, dan Nomor Rangka sudah benar dan terdaftar di Samsat.' }
@@ -77,7 +77,7 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
     }
 
     const responseBody = await response.json()
-    console.log('[searchReal] Response:', responseBody)
+    // console.log('[searchReal] Response:', responseBody)
 
     // Status Code 3: Data Not Found
     if (responseBody.data?.statusCode === 3) {
@@ -109,7 +109,7 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
     vehicle.canPayOnline = true
     return { status: 'found', vehicle, totalPajak: calculateTotalPajak(vehicle.pajak), message: responseBody.data?.deskripsi || 'Data ditemukan' }
   } catch (err) {
-    console.error('[vehicleApi]', err)
+    // console.error('[vehicleApi]', err)
     return { status: 'error', vehicle: null, totalPajak: 0, message: 'Gagal menghubungi server. Periksa koneksi internet Anda.' }
   }
 }
@@ -124,7 +124,7 @@ export const generateKodeBayarApi = async ({ nik, nopolAngka, nopolSeri, noRangk
       rangka_last5: noRangkaLast5.replace(/\s+/g, ''),
       no_reff: noReff
     }
-    console.log('[generateKodeBayarApi] Sending payload:', payload)
+    // console.log('[generateKodeBayarApi] Sending payload:', payload)
 
     const response = await fetch(API_BASE_URL + '/sb/inq/sod/kode_bayar', {
       method: 'POST',

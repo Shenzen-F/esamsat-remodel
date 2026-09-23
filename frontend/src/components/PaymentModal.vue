@@ -67,7 +67,7 @@ const sseInstance = ref(null)
  * Handler pemrosesan event pembayaran dari SSE.
  */
 const handlePaymentSuccessEvent = (rawPayload) => {
-  console.log('[SSE] Pembayaran berhasil diterima:', rawPayload)
+  // console.log('[SSE] Pembayaran berhasil diterima:', rawPayload)
   sseStatus.value = 'success'
   isSuccess.value = true
   
@@ -96,20 +96,20 @@ const initPaymentStatusSSE = (subscribeId) => {
     ? '/api-sse/sse/streams' 
     : (import.meta.env.VITE_SSE_URL || 'https://notify.samsatdigital.net/sse/streams')
   const sseUrl = `${sseBaseUrl}?id=${subscribeId}`
-  console.log(`[SSE] Menghubungkan ke ${sseUrl}...`)
+  // console.log(`[SSE] Menghubungkan ke ${sseUrl}...`)
 
   try {
     sseInstance.value = new EventSource(sseUrl)
 
     sseInstance.value.onopen = () => {
-      console.log(`[SSE] Terhubung ke channel stream: ${subscribeId}`)
+      // console.log(`[SSE] Terhubung ke channel stream: ${subscribeId}`)
       sseStatus.value = 'connected'
     }
 
     const processMessageData = (rawText) => {
       try {
         const data = typeof rawText === 'object' ? rawText : JSON.parse(rawText)
-        console.log('[SSE] Data event diterima:', data)
+        // console.log('[SSE] Data event diterima:', data)
 
         // Verifikasi berbagai kemungkinan format sukses pembayaran
         const isPaid =
@@ -129,7 +129,7 @@ const initPaymentStatusSSE = (subscribeId) => {
         if (cleanStr === 'LUNAS' || cleanStr === 'SUCCESS' || cleanStr === 'PAID') {
           handlePaymentSuccessEvent({ status: cleanStr })
         } else {
-          console.log('[SSE] Pesan teks mentah:', rawText)
+          // console.log('[SSE] Pesan teks mentah:', rawText)
         }
       }
     }
@@ -164,7 +164,7 @@ const initPaymentStatusSSE = (subscribeId) => {
  */
 const closeSSE = () => {
   if (sseInstance.value) {
-    console.log('[SSE] Menutup koneksi SSE...')
+    // console.log('[SSE] Menutup koneksi SSE...')
     sseInstance.value.close()
     sseInstance.value = null
   }
