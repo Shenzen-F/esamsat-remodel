@@ -1,32 +1,13 @@
 <!--
   @component Footer.vue
   @description Footer global aplikasi e-Samsat Aceh (digunakan di halaman utama setelah login).
-  Menampilkan informasi kontak Tim IT e-Samsat, logo mitra pendukung (Polri, Pemerintah Aceh,
-  Jasa Raharja), dan tautan navigasi cepat (Kebijakan Privasi, S&K, Bantuan, Peta Situs).
-  @emits set-tab - Dikirim saat pengguna mengklik tautan navigasi di footer (Bantuan, Peta Situs)
+  Menampilkan informasi kontak Tim IT e-Samsat, dan logo mitra pendukung (Polri, Pemerintah Aceh,
+  Jasa Raharja).
 -->
 <script setup>
 import pancacitaLogo from '../assets/pancacita.png'
 import polriLogo from '../assets/Polri Logo - Colored - zonalogo.com.png'
 import jasaRaharjaLogo from '../assets/Jasa Raharja Logo - Colored - zonalogo.com.png'
-
-const emit = defineEmits(['set-tab'])
-
-/**
- * Menampilkan pop-up (alert) berisi ringkasan Kebijakan Privasi e-Samsat Aceh.
- * Sementara menggunakan window.alert() — pada implementasi final bisa diganti modal.
- */
-const showPrivacy = () => {
-  alert('Kebijakan Privasi e-Samsat Aceh: Seluruh data NIK dan Nomor Polisi dienkripsi secara aman.')
-}
-
-/**
- * Menampilkan pop-up (alert) berisi ringkasan Syarat & Ketentuan.
- * Sementara menggunakan window.alert() — pada implementasi final bisa diganti modal.
- */
-const showTerms = () => {
-  alert('Syarat & Ketentuan: Pengesahan STNK dilakukan maksimal 30 hari setelah pelunasan pajak.')
-}
 </script>
 
 <template>

@@ -222,12 +222,7 @@ const isSectionVisible = (name) => observedSections.value.has(name)
           </div>
         </div>
 
-        <div class="footer-right">
-          <span class="footer-link">Kebijakan Privasi</span>
-          <span class="footer-link">Syarat & Ketentuan</span>
-          <span class="footer-link" @click="emit('enter-app')">Bantuan</span>
-          <span class="footer-link" @click="emit('enter-app')">Peta Situs</span>
-        </div>
+        <div style="flex: 1;"></div>
       </div>
       <div class="footer-copy-bar">
         © {{ new Date().getFullYear() }} Tim IT e-Samsat Aceh — Badan Pengelolaan Keuangan Aceh
