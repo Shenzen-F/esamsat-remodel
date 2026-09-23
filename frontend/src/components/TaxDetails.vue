@@ -69,7 +69,8 @@ const hasPaidInLocal = computed(() => {
 
 const isPaid = computed(() => {
   if (props.vehicle?.statusCode === 1) return false
-  return props.vehicle?.status === 'LUNAS' || hasPaidInLocal.value
+  const alreadyPaidDesc = props.vehicle?.statusCode === 2 && props.vehicle?.deskripsi && props.vehicle.deskripsi.includes('berhasil dibayar')
+  return props.vehicle?.status === 'LUNAS' || hasPaidInLocal.value || alreadyPaidDesc
 })
 const isStatusCode2 = computed(() => props.vehicle?.statusCode === 2)
 </script>
