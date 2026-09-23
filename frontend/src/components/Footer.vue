@@ -33,7 +33,7 @@ const showTerms = () => {
   <footer class="footer">
     <div class="footer-glow"></div>
     <div class="footer-content">
-      <div class="footer-left">
+      <div class="footer-left" style="flex: 1;">
         <div class="footer-brand-title">
           <strong>Tim IT e-Samsat Aceh</strong>
           <span class="footer-sub">Badan Pengelolaan Keuangan Aceh</span>
@@ -72,20 +72,7 @@ const showTerms = () => {
         </div>
       </div>
 
-      <div class="footer-right">
-        <span class="footer-link" @click="showPrivacy">
-          Kebijakan Privasi
-        </span>
-        <span class="footer-link" @click="showTerms">
-          Syarat & Ketentuan
-        </span>
-        <span class="footer-link" @click="emit('set-tab', 'bantuan')">
-          Bantuan
-        </span>
-        <span class="footer-link" @click="emit('set-tab', 'informasi')">
-          Peta Situs
-        </span>
-      </div>
+      <div style="flex: 1;"></div>
     </div>
     <div class="footer-copy-bar">
       © {{ new Date().getFullYear() }} Tim IT e-Samsat Aceh — Badan Pengelolaan Keuangan Aceh

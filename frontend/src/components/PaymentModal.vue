@@ -92,7 +92,8 @@ const initPaymentStatusSSE = (subscribeId) => {
   sseStatus.value = 'connecting'
 
   // URL SSE sesuai dengan spesifikasi API Samsat Digital
-  const sseUrl = `https://notify.samsatdigital.net/sse/streams?id=${subscribeId}`
+  const sseBaseUrl = import.meta.env.VITE_SSE_URL || 'https://notify.samsatdigital.net/sse/streams'
+  const sseUrl = `${sseBaseUrl}?id=${subscribeId}`
   console.log(`[SSE] Menghubungkan ke ${sseUrl}...`)
 
   try {
@@ -203,25 +204,7 @@ onMounted(() => {
 
   sseSubscribeId.value = currentSseId
 
-  console.log(`\n===========================================`)
-  console.log(`[DEV] KODE BAYAR: ${kodeBayar.value}`)
-  console.log(`[DEV] SSE SUBSCRIBE CHANNEL ID: ${currentSseId}`)
-  console.log(`[DEV] SSE URL: https://notify.samsatdigital.net/sse/streams?id=${currentSseId}`)
-  console.log(`[DEV] Untuk simulasi pembayaran manual dari Console:`)
-  console.log(`%cwindow.simulatePayment('${currentSseId}')`, 'background: #222; color: #bada55; padding: 4px; border-radius: 4px; font-weight: bold;')
-  console.log(`===========================================\n`)
 
-  // Global function for manual trigger via console
-  window.simulatePayment = (sseId, customData = null) => {
-    if (!sseId || sseId === currentSseId || sseId === kodeBayar.value) {
-      console.log(`[DEV] Simulasi event bayar berhasil untuk SSE ID: ${currentSseId}`)
-      handlePaymentSuccessEvent(customData || { status: 'SUCCESS', message: 'Simulasi Pembayaran Berhasil' })
-      return 'Berhasil mensimulasikan pembayaran SSE!'
-    } else {
-      console.warn(`[DEV] Gagal: SSE ID tidak cocok. Diharapkan: ${currentSseId}, Dimasukkan: ${sseId}`)
-      return 'Gagal mensimulasikan pembayaran. SSE ID tidak cocok.'
-    }
-  }
 
   // Mulai subscribe status pembayaran lewat SSE
   initPaymentStatusSSE(currentSseId)
@@ -341,44 +324,7 @@ const formatRupiah = (val) => 'Rp ' + val.toLocaleString('id-ID')
           </button>
         </div>
 
-        <!-- Real-time SSE Live Status Card -->
-        <div
-          class="sse-status-card"
-          style="
-            margin-top: 0.75rem;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 10px;
-            padding: 0.65rem 0.85rem;
-            text-align: left;
-          "
-        >
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-            <div style="display: flex; align-items: center; gap: 0.45rem; font-size: 0.75rem; font-weight: 700;">
-              <span v-if="sseStatus === 'connected'" class="sse-pulse-dot"></span>
-              <span v-else-if="sseStatus === 'connecting'" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #eab308;"></span>
-              <span v-else style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ef4444;"></span>
 
-              <span :style="{ color: sseStatus === 'connected' ? '#166534' : (sseStatus === 'connecting' ? '#854d0e' : '#991b1b') }">
-                {{ sseStatus === 'connected' ? 'Monitoring Status Real-time (SSE Aktif)' : (sseStatus === 'connecting' ? 'Menghubungkan ke SSE...' : 'SSE Terputus (Auto Reconnect)') }}
-              </span>
-            </div>
-            <button
-              v-if="sseSubscribeId"
-              type="button"
-              @click="handleCopySse"
-              title="Salin ID SSE untuk publish dari Backend"
-              style="background: transparent; border: none; cursor: pointer; color: #166534; font-size: 0.65rem; display: flex; align-items: center; gap: 0.25rem; font-weight: 600; padding: 0.1rem 0.3rem;"
-            >
-              <Check v-if="copiedSse" :size="12" color="#16a34a" />
-              <Copy v-else :size="12" />
-              {{ copiedSse ? 'ID Tersalin' : 'Salin ID SSE' }}
-            </button>
-          </div>
-          <div style="font-size: 0.68rem; color: #15803d; font-family: monospace; word-break: break-all;">
-            Channel: <strong>{{ sseSubscribeId || 'Menunggu inisialisasi...' }}</strong>
-          </div>
-        </div>
 
         <!-- Panduan Pembayaran Dropdown -->
         <div class="payment-guides" style="margin-top: 1rem; text-align: left;">
