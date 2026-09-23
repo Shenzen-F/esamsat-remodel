@@ -10,6 +10,12 @@ export default defineConfig(({ mode }) => {
 
     plugins: [vue()],
 
+    resolve: {
+      alias: {
+        '@': import.meta.dirname + '/src'
+      }
+    },
+
     server: {
       host: true,
       allowedHosts: true,

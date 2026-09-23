@@ -20,7 +20,8 @@
       "VITE_API_URL": "/api-backend",
       "VITE_SSE_URL": "/api-sse/sse/streams",
       "VITE_BASE_PATH": "/",
-      "VITE_APP_TITLE": "e-Samsat Aceh"
+      "VITE_APP_TITLE": "e-Samsat Aceh",
+      "VITE_APP_ENV": "production"
     }
   }
 }

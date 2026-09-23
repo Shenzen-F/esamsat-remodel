@@ -13,6 +13,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { X, Copy, Check, QrCode, Sparkles, ShieldCheck, ChevronDown, ChevronUp, Radio, Wifi } from '@lucide/vue'
+import { SSE_BASE_URL } from '../constants/env'
 import { useESamsatStore } from '../stores/eSamsatStore'
 
 // Key for storing paid vehicle info
@@ -92,9 +93,8 @@ const initPaymentStatusSSE = (subscribeId) => {
   sseStatus.value = 'connecting'
 
   // URL SSE sesuai dengan spesifikasi API Samsat Digital
-  const sseBaseUrl = import.meta.env.DEV 
-    ? '/api-sse/sse/streams' 
-    : (import.meta.env.VITE_SSE_URL || 'https://notify.samsatdigital.net/sse/streams')
+  // URL SSE dikonfigurasi secara terpusat di src/constants/env.js
+  const sseBaseUrl = SSE_BASE_URL
   const sseUrl = `${sseBaseUrl}?id=${subscribeId}`
   // console.log(`[SSE] Menghubungkan ke ${sseUrl}...`)
 

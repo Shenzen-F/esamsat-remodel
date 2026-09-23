@@ -4,16 +4,15 @@
  */
 
 import { calculateTotalPajak } from '../data/mockData'
+import { API_BASE_URL } from '../constants/env'
 
 // ─── KONFIGURASI ──────────────────────────────────────────────────────────────
 
 /** Base URL API backend. 
  * Saat development, gunakan proxy '/api-backend'. 
- * Saat production, gunakan VITE_API_URL dari .env. 
+ * Saat production, gunakan VITE_API_URL dari .env.production.
+ * Dikonfigurasi secara terpusat di src/constants/env.js
  */
-const API_BASE_URL = import.meta.env.DEV 
-  ? '/api-backend' 
-  : (import.meta.env.VITE_API_URL || 'https://api.samsatdigital.net')
 
 // ─── TIPE HASIL ───────────────────────────────────────────────────────────────
 /**
