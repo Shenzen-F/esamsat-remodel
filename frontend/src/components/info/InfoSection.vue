@@ -10,10 +10,24 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
 import { MapPin, Calendar, HelpCircle, Mail, Car, Building } from '@lucide/vue'
-import { INFORMASI_LAYANAN } from '../../data/mockData'
 import { getSamsatLocations } from '../../services/location.service'
 
-
+const INFORMASI_LAYANAN = {
+  faq: [
+    {
+      q: "Dokumen apa saja yang wajib dibawa saat pengesahan STNK?",
+      a: "Anda perlu membawa KTP asli pemilik sesuai STNK, STNK asli, dan bukti transaksi pembayaran e-Samsat Aceh (Kode Bayar / Resi Digital)."
+    },
+    {
+      q: "Di mana saya bisa melakukan pembayaran e-Samsat Aceh?",
+      a: "Pembayaran dapat dilakukan melalui ATM Bank Aceh Syariah, Teller Bank Aceh Syariah, Aplikasi Action Mobile Banking Bank Aceh, Loket PT. POS Indonesia dan Aplikasi PosPay."
+    },
+    {
+      q: "Berapa lama batas waktu penukaran nota pajak setelah bayar online?",
+      a: "Batas waktu pengesahan STNK adalah 30 hari kerja sejak tanggal pembayaran sukses dilakukan."
+    }
+  ]
+};
 
 /** @prop {string} type - Menentukan konten yang ditampilkan ('informasi' untuk layanan, lainnya untuk FAQ) */
 const props = defineProps({

@@ -12,7 +12,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Car, FileText, Clock, AlertCircle, CheckCircle2, QrCode } from '@lucide/vue'
-import { calculateTotalPajak } from '../../data/mockData'
+import { calculateTotalPajak } from '../../utils/tax'
 
 const props = defineProps({
   vehicle: { type: Object, default: null }

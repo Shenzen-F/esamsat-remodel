@@ -2,7 +2,7 @@
   @component PaymentModal.vue
   @description Modal overlay untuk proses pembayaran pajak kendaraan.
   Menampilkan kode bayar (Virtual Account), countdown batas waktu,
-  panduan pembayaran (ATM Bank Aceh & ACTION Mobile), dan tombol simulasi bayar (demo).
+  panduan pembayaran (ATM Bank Aceh & ACTION Mobile).
   Mendukung SSE (Server-Sent Events) untuk notifikasi pembayaran real-time dari backend.
   Setelah pembayaran berhasil, menampilkan bukti pembayaran (resi digital).
   @props vehicle {Object} - Data kendaraan yang sedang dibayar
@@ -252,17 +252,6 @@ const handleCopy = () => {
   }, 2000)
 }
 
-/**
- * Menyalin channel ID SSE untuk simulasi backend.
- */
-const handleCopySse = () => {
-  if (!sseSubscribeId.value) return
-  navigator.clipboard.writeText(sseSubscribeId.value)
-  copiedSse.value = true
-  setTimeout(() => {
-    copiedSse.value = false
-  }, 2000)
-}
 
 // Show receipt directly for already paid vehicle
 const showReceiptForPaid = () => {

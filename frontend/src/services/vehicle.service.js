@@ -3,7 +3,7 @@
  * @description Lapisan layanan (service layer) untuk data kendaraan.
  */
 
-import { calculateTotalPajak } from '../data/mockData'
+import { calculateTotalPajak } from '../utils/tax'
 import { API_BASE_URL } from '../constants/env'
 
 // ─── KONFIGURASI ──────────────────────────────────────────────────────────────
