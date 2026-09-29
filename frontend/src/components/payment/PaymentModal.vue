@@ -13,8 +13,8 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { X, Copy, Check, QrCode, Sparkles, ShieldCheck, ChevronDown, ChevronUp, Radio, Wifi } from '@lucide/vue'
-import { SSE_BASE_URL } from '../constants/env'
-import { useESamsatStore } from '../stores/eSamsatStore'
+import { SSE_BASE_URL } from '../../constants/env'
+import { useESamsatStore } from '../../stores/eSamsatStore'
 
 // Key for storing paid vehicle info
 const PAID_KEY = 'esamsat_paid_vehicles'

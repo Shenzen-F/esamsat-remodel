@@ -10,11 +10,11 @@ import { ref, onMounted, onBeforeUnmount, reactive } from 'vue'
 import {
   ArrowRight, ChevronDown, Car, FileText, CreditCard, Zap
 } from '@lucide/vue'
-import esamsatLogo from '../assets/esamsat.svg'
-import sekretariatLogo from '../assets/sekretariat samsat.png'
-import pancacitaLogo from '../assets/pancacita.png'
-import polriLogo from '../assets/Polri Logo - Colored - zonalogo.com.png'
-import jasaRaharjaLogo from '../assets/Jasa Raharja Logo - Colored - zonalogo.com.png'
+import esamsatLogo from '../../assets/esamsat.svg'
+import sekretariatLogo from '../../assets/sekretariat samsat.png'
+import pancacitaLogo from '../../assets/pancacita.png'
+import polriLogo from '../../assets/Polri Logo - Colored - zonalogo.com.png'
+import jasaRaharjaLogo from '../../assets/Jasa Raharja Logo - Colored - zonalogo.com.png'
 
 const emit = defineEmits(['enter-app'])
 

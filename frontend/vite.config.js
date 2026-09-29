@@ -3,9 +3,11 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
+  const envDir = './env'
+  const env = loadEnv(mode, process.cwd() + '/env', '')
 
   return {
+    envDir,
     base: env.VITE_BASE_PATH || '/esamsat-remodel/',
 
     plugins: [vue()],

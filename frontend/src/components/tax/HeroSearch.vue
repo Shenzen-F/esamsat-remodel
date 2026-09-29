@@ -13,7 +13,7 @@
 -->
 <script setup>
 import { FileText, ShieldCheck, CreditCard, Search, RotateCcw } from '@lucide/vue'
-import esamsatLogo from '../assets/esamsat.svg'
+import esamsatLogo from '../../assets/esamsat.svg'
 
 defineProps({
   formData: { type: Object, required: true },

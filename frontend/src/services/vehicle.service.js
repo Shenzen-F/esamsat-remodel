@@ -168,15 +168,3 @@ export const generateKodeBayar = async (params) => {
   return generateKodeBayarApi(params)
 }
 
-// ─── LOKASI E-SAMSAT ACEH ───────────────────────────────────────────────────
-
-export const getSamsatLocations = async () => {
-  try {
-    const response = await fetch(API_BASE_URL + '/samsat-locations')
-    if (!response.ok) throw new Error('HTTP ' + response.status)
-    return await response.json() // Asumsi struktur { success, message, data: [] }
-  } catch (err) {
-    console.error('[getSamsatLocations]', err)
-    return { success: false, message: 'Gagal menghubungi server.', data: [] }
-  }
-}

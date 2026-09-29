@@ -7,8 +7,8 @@
   @emits go-to-landing - Dikirim saat pengguna mengklik logo/brand, untuk kembali ke halaman Landing.
 -->
 <script setup>
-import esamsatLogo from '../assets/esamsat.svg'
-import sekretariatLogo from '../assets/sekretariat samsat.png'
+import esamsatLogo from '../../assets/esamsat.svg'
+import sekretariatLogo from '../../assets/sekretariat samsat.png'
 
 /** @prop {string} activeTab - Nama tab yang sedang aktif untuk highlight navigasi */
 defineProps({

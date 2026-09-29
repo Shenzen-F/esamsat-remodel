@@ -1,15 +1,15 @@
 <script setup>
 import { ref, reactive, watch, nextTick } from 'vue'
-import Navbar from './components/Navbar.vue'
-import LandingPage from './components/LandingPage.vue'
-import HeroSearch from './components/HeroSearch.vue'
-import TaxDetails from './components/TaxDetails.vue'
-import PaymentModal from './components/PaymentModal.vue'
-import PaymentSuccess from './components/PaymentSuccess.vue'
-import InfoSection from './components/InfoSection.vue'
-import Footer from './components/Footer.vue'
+import Navbar from './components/layout/Navbar.vue'
+import LandingPage from './components/pages/LandingPage.vue'
+import HeroSearch from './components/tax/HeroSearch.vue'
+import TaxDetails from './components/tax/TaxDetails.vue'
+import PaymentModal from './components/payment/PaymentModal.vue'
+import PaymentSuccess from './components/payment/PaymentSuccess.vue'
+import InfoSection from './components/info/InfoSection.vue'
+import Footer from './components/layout/Footer.vue'
 import { calculateTotalPajak } from './data/mockData'
-import { searchVehicle, generateKodeBayar } from './services/vehicleApi'
+import { searchVehicle, generateKodeBayar } from './services/vehicle.service'
 const showLanding = ref(true)
 const activeTab = ref('beranda')
 const resultsRef = ref(null)

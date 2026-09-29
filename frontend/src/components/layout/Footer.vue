@@ -5,9 +5,9 @@
   Jasa Raharja).
 -->
 <script setup>
-import pancacitaLogo from '../assets/pancacita.png'
-import polriLogo from '../assets/Polri Logo - Colored - zonalogo.com.png'
-import jasaRaharjaLogo from '../assets/Jasa Raharja Logo - Colored - zonalogo.com.png'
+import pancacitaLogo from '../../assets/pancacita.png'
+import polriLogo from '../../assets/Polri Logo - Colored - zonalogo.com.png'
+import jasaRaharjaLogo from '../../assets/Jasa Raharja Logo - Colored - zonalogo.com.png'
 </script>
 
 <template>
