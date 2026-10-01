@@ -38,18 +38,27 @@
   padding: 0;
 }
 
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-dark);
   background: var(--bg-charcoal-gradient);
   background-attachment: fixed;
   min-height: 100vh;
+  min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* App Wrapper */
 .app-container {
   min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport height — adapts to mobile browser chrome */
   display: flex;
   flex-direction: column;
 }
@@ -771,6 +780,7 @@ body {
   box-shadow: var(--shadow-lg);
   position: relative;
   max-height: 90vh;
+  max-height: 90dvh;
   overflow-y: auto;
 }
 
@@ -1021,9 +1031,17 @@ body {
   .hero-title {
     font-size: 2.2rem;
   }
+
+  .main-content {
+    padding: 1rem 1.5rem 4rem 1.5rem;
+  }
 }
 
 @media (max-width: 640px) {
+  .main-content {
+    padding: 1rem 1rem 3rem 1rem;
+  }
+
   .info-fields-grid {
     grid-template-columns: 1fr;
   }
@@ -1035,6 +1053,14 @@ body {
   .footer-content {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .navbar {
+    padding: 1rem 1rem;
+  }
+
+  .footer {
+    padding: 1rem 1rem;
   }
 }
 
@@ -1206,6 +1232,7 @@ body {
 /* Root */
 .lp-root {
   min-height: 100vh;
+  min-height: 100dvh;
   color: #ffffff;
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
@@ -1312,6 +1339,7 @@ body {
 .lp-hero {
   position: relative;
   min-height: 85vh;
+  min-height: 85dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2042,6 +2070,7 @@ body {
 @media (max-width: 480px) {
   .lp-hero {
     min-height: 70vh;
+    min-height: 70dvh;
     padding: 4.5rem 1.25rem 1rem;
   }
 
@@ -2171,6 +2200,7 @@ body {
   .modal-card {
     padding: 1.5rem 1.25rem;
     max-height: 95vh;
+    max-height: 95dvh;
   }
 
   .modal-countdown-banner {
@@ -2186,6 +2216,18 @@ body {
 }
 
 @media (max-width: 480px) {
+  .main-content {
+    padding: 0.75rem 0.75rem 3rem 0.75rem;
+  }
+
+  .navbar {
+    padding: 0.75rem 0.75rem;
+  }
+
+  .footer {
+    padding: 1rem 0.75rem;
+  }
+
   .feature-pills {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

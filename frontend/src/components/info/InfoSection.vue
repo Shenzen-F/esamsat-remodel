@@ -252,7 +252,7 @@ const isFlipped = (id) => flippedCards.value.has(id)
         <p style="color: #94a3b8">Memuat data lokasi...</p>
       </div>
 
-      <div v-else style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; max-width: 1000px; margin: 0 auto;">
+      <div v-else class="info-location-grid">
         <template v-if="filteredLocations.length > 0">
           <div 
             v-for="(item, idx) in filteredLocations" 
@@ -261,12 +261,12 @@ const isFlipped = (id) => flippedCards.value.has(id)
           >
             <div class="flip-card-inner" :class="{ 'is-flipped': isFlipped(item.id) }">
               <!-- FRONT -->
-              <div class="flip-card-front" style="background: #ffffff; border-radius: 16px; padding: 1.5rem; color: #1e293b; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 0.75rem;">
+              <div class="flip-card-front location-card-face">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.75rem;">
                   <div style="display: flex; align-items: center; gap: 0.5rem; color: #00b4b6;">
                     <Building v-if="item.type !== 'Samsat Keliling' && item.type !== 'Samsat Jempol'" :size="20" />
                     <Car v-else :size="20" />
-                    <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin: 0">{{ item.name }}</h3>
+                    <h3 class="location-card-name">{{ item.name }}</h3>
                   </div>
                   <div :style="{ 
                     backgroundColor: item.is_open_now ? '#22c55e' : '#ef4444', 
@@ -313,7 +313,7 @@ const isFlipped = (id) => flippedCards.value.has(id)
               </div>
               
               <!-- BACK -->
-              <div class="flip-card-back" style="background: #ffffff; border-radius: 16px; padding: 1.5rem; color: #1e293b; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 0.75rem;">
+              <div class="flip-card-back location-card-face">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.75rem;">
                   <h3 style="font-size: 1.05rem; font-weight: 700; color: #0f172a; margin: 0">Jadwal Lainnya</h3>
                   <button @click="toggleFlip(item.id)" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; line-height: 1;">&times;</button>
@@ -405,50 +405,52 @@ const isFlipped = (id) => flippedCards.value.has(id)
   </div>
 </template>
 
- < s t y l e   s c o p e d > 
- . f l i p - c a r d - c o n t a i n e r   { 
-     b a c k g r o u n d - c o l o r :   t r a n s p a r e n t ; 
-     p e r s p e c t i v e :   1 0 0 0 p x ; 
-     m i n - h e i g h t :   2 8 0 p x ; 
- } 
- 
- . f l i p - c a r d - i n n e r   { 
-     p o s i t i o n :   r e l a t i v e ; 
-     w i d t h :   1 0 0 % ; 
-     h e i g h t :   1 0 0 % ; 
-     t r a n s i t i o n :   t r a n s f o r m   0 . 6 s ; 
-     t r a n s f o r m - s t y l e :   p r e s e r v e - 3 d ; 
- } 
- 
- . f l i p - c a r d - i n n e r . i s - f l i p p e d   { 
-     t r a n s f o r m :   r o t a t e Y ( 1 8 0 d e g ) ; 
- } 
- 
- . f l i p - c a r d - f r o n t ,   . f l i p - c a r d - b a c k   { 
-     p o s i t i o n :   a b s o l u t e ; 
-     w i d t h :   1 0 0 % ; 
-     h e i g h t :   1 0 0 % ; 
-     - w e b k i t - b a c k f a c e - v i s i b i l i t y :   h i d d e n ; 
-     b a c k f a c e - v i s i b i l i t y :   h i d d e n ; 
- } 
- 
- . f l i p - c a r d - b a c k   { 
-     t r a n s f o r m :   r o t a t e Y ( 1 8 0 d e g ) ; 
- } 
- < / s t y l e >  
- 
-
 <style scoped>
+/* ── Location Grid ── */
+.info-location-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Card Face (shared front/back) ── */
+.location-card-face {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: #1e293b;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ── Card Name ── */
+.location-card-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
+}
+
+/* ── Flip Card ──
+   Front face is position:relative so it drives the container height.
+   Back face is position:absolute overlaying the front.
+   This ensures the card grows with content (long addresses, etc). */
 .flip-card-container {
   background-color: transparent;
   perspective: 1000px;
-  min-height: 280px;
 }
 
 .flip-card-inner {
   position: relative;
   width: 100%;
-  height: 100%;
   transition: transform 0.6s;
   transform-style: preserve-3d;
 }
@@ -457,15 +459,55 @@ const isFlipped = (id) => flippedCards.value.has(id)
   transform: rotateY(180deg);
 }
 
-.flip-card-front, .flip-card-back {
-  position: absolute;
+/* Front face: relative — sets the natural height of the container */
+.flip-card-front {
+  position: relative;
   width: 100%;
-  height: 100%;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
 }
 
+/* Back face: absolute overlay on top of front */
 .flip-card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   transform: rotateY(180deg);
+}
+
+/* ── Mobile Responsive ── */
+@media (max-width: 640px) {
+  .info-location-grid {
+    gap: 1rem;
+  }
+
+  .location-card-face {
+    padding: 1.15rem;
+    gap: 0.6rem;
+  }
+
+  .location-card-name {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .info-location-grid {
+    gap: 0.75rem;
+  }
+
+  .location-card-face {
+    padding: 1rem;
+    gap: 0.5rem;
+    border-radius: 12px;
+  }
+
+  .location-card-name {
+    font-size: 0.9rem;
+  }
 }
 </style>
