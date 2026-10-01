@@ -10,6 +10,9 @@ import InfoSection from './components/info/InfoSection.vue'
 import Footer from './components/layout/Footer.vue'
 import { calculateTotalPajak } from './utils/tax'
 import { searchVehicle, generateKodeBayar } from './services/vehicle.service'
+import { useESamsatStore } from './stores/eSamsatStore'
+const eSamsatStore = useESamsatStore()
+
 const showLanding = ref(true)
 const activeTab = ref('beranda')
 const resultsRef = ref(null)
@@ -270,6 +273,14 @@ const handleSearch = async () => {
   }
   localStorage.setItem(SEARCHED_KEY, JSON.stringify(searchedVehicles))
 
+  // Cache hasil cek pajak di Pinia store
+  eSamsatStore.setCekPajakResult(
+    foundVehicle.statusCode,
+    result.message || '',
+    foundVehicle.kendaraan,
+    foundVehicle.pajak
+  )
+
   // Auto-open payment modal hanya jika statusCode 1 dan ada kode bayar tersimpan
   if (foundVehicle.statusCode === 1) {
     const allKodes = getStoredKodeBayar()
@@ -317,6 +328,9 @@ const handleReset = () => {
     sessionStorage.removeItem(`kodebayar_${currentVehicle.value.nopolClean}`)
   }
   currentVehicle.value = null
+
+  // Reset Pinia store cache
+  eSamsatStore.resetState()
 }
 
 /**
@@ -455,6 +469,9 @@ const onBackToHome = () => {
   formErrors.nopolSeri = ''
   formErrors.noRangkaLast5 = ''
   activeTab.value = 'beranda'
+
+  // Reset Pinia store cache
+  eSamsatStore.resetState()
 }
 </script>
 

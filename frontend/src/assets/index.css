@@ -62,7 +62,7 @@ body {
   padding: 1.25rem 2rem;
   color: #ffffff;
   position: relative;
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   width: 100%;
 }
@@ -153,7 +153,7 @@ body {
 .main-content {
   flex: 1;
   width: 100%;
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 1rem 2rem 4rem 2rem;
 }
@@ -851,7 +851,7 @@ body {
 }
 
 .footer-content {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -991,7 +991,7 @@ body {
 }
 
 .footer-copy-bar {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 1.5rem auto 0;
   padding-top: 1.25rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -1228,7 +1228,7 @@ body {
 }
 
 .lp-nav-inner {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 1.1rem 3rem;
   display: flex;
@@ -1496,7 +1496,7 @@ body {
 /* ── Shared Section ── */
 .lp-section {
   padding: 6rem 2rem;
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   width: 100%;
 }
@@ -1801,7 +1801,7 @@ body {
 }
 
 .lp-footer-inner {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;

@@ -1,0 +1,1004 @@
+{
+    "success": true,
+    "message": "ok",
+    "data": [
+        {
+            "id_branch": "30422a24-13aa-494f-9dee-3207acf2c544",
+            "name_branch": "UPTD PPA Wilayah I Banda Aceh",
+            "name_samsat": "Samsat Banda Aceh",
+            "address": "Jl. Mr. T. Muhammad Hasan Desa Lamcot, Darul Imarah, Banda Aceh",
+            "latitude": "5.522902",
+            "longitude": "95.330438",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [
+                {
+                    "type": "static",
+                    "id_sub_branch": "8f078dcd-4f03-43f0-9cec-cd634c1aa45e",
+                    "name_sub_branch": "Samsat DriveThru 1",
+                    "address": "Jl. Mr. T. Muhammad Hasan Desa Lamcot, Darul Imarah, Banda Aceh",
+                    "latitude": "5.522902",
+                    "longitude": "95.330438",
+                    "office_hours": [
+                        {
+                            "day": "Senin - Kamis",
+                            "opening": "08:30",
+                            "closing": "15:00"
+                        },
+                        {
+                            "day": "Jumat - Sabtu",
+                            "opening": "08:30",
+                            "closing": "12:00"
+                        }
+                    ],
+                    "is_open_now": true,
+                    "active_closure": null,
+                    "today_schedule": {
+                        "day": "Senin - Kamis",
+                        "opening": "08:30",
+                        "closing": "15:00"
+                    }
+                },
+                {
+                    "type": "static",
+                    "id_sub_branch": "6b2b7b9f-921c-416f-b81e-29fc11e94c0d",
+                    "name_sub_branch": "Samsat Mpp Kota Banda Aceh",
+                    "address": "Alamat Terdekat: Jl. Pangeran Diponegoro No.106, Kp. Baru, Kec. Baiturrahman, Kota Banda Aceh, Aceh 23242",
+                    "latitude": "5.5550250",
+                    "longitude": "95.3171595",
+                    "office_hours": [
+                        {
+                            "day": "Senin - Kamis",
+                            "opening": "08:30",
+                            "closing": "15:00"
+                        },
+                        {
+                            "day": "Jumat - Sabtu",
+                            "opening": "08:30",
+                            "closing": "12:00"
+                        }
+                    ],
+                    "is_open_now": true,
+                    "active_closure": null,
+                    "today_schedule": {
+                        "day": "Senin - Kamis",
+                        "opening": "08:30",
+                        "closing": "15:00"
+                    }
+                },
+                {
+                    "type": "mobile",
+                    "id_sub_branch": "4b5a2528-3ee9-4317-a27f-4ba5ed2c467e",
+                    "name_sub_branch": "Samsat Keliling 01 Banda Aceh",
+                    "schedule": [
+                        {
+                            "day": "Senin - Jumat",
+                            "address": "Jl. Stadion H. Dimurthala, Kota Baru, Kec. Kuta Alam, Kota Banda Aceh, Aceh 24415",
+                            "latitude": "5.56547",
+                            "longitude": "95.340614"
+                        }
+                    ],
+                    "office_hours": [
+                        {
+                            "day": "Senin - Kamis",
+                            "opening": "08:30",
+                            "closing": "15:00"
+                        },
+                        {
+                            "day": "Jumat - Sabtu",
+                            "opening": "08:30",
+                            "closing": "12:00"
+                        }
+                    ],
+                    "is_open_now": true,
+                    "active_closure": null,
+                    "today_schedule": {
+                        "day": "Senin - Kamis",
+                        "opening": "08:30",
+                        "closing": "15:00"
+                    },
+                    "active_location_today": {
+                        "day": "Senin - Jumat",
+                        "address": "Jl. Stadion H. Dimurthala, Kota Baru, Kec. Kuta Alam, Kota Banda Aceh, Aceh 24415",
+                        "latitude": "5.56547",
+                        "longitude": "95.340614"
+                    }
+                }
+            ],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "e4b49280-6a44-4b3d-aeb9-acd609b9521b",
+            "name_branch": "UPTD PPA Wilayah II Aceh Besar",
+            "name_samsat": "Samsat Aceh Besar",
+            "address": "Jl. Rel Kereta Api, Lambaro, Kec. Ingin Jaya, Kabupaten Aceh Besar",
+            "latitude": "5.51505803228814",
+            "longitude": "95.35612167467843",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "c4d96303-bb99-42d2-901a-f5e7671d1dcc",
+            "name_branch": "UPTD PPA Wilayah III Pidie",
+            "name_samsat": "Samsat Pidie",
+            "address": "Jln. Prof. A. Madjid Ibrahim Desa Lampeudeu Baroh, Pidie, Pidie",
+            "latitude": "5,3679953",
+            "longitude": "95,9589598",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [
+                {
+                    "type": "static",
+                    "id_sub_branch": "6303eee8-c314-4cde-b954-f9d5e62635a5",
+                    "name_sub_branch": "SAMSAT GAMPONG I LAMLO",
+                    "address": "Jl. Bereunuen - Keumala Mns Blang, Kec. Sakti, Kabupaten Pidie, Aceh 24181",
+                    "latitude": "5.252560",
+                    "longitude": "95.943464",
+                    "office_hours": [
+                        {
+                            "day": "Senin - Kamis",
+                            "opening": "08:30",
+                            "closing": "15:00"
+                        },
+                        {
+                            "day": "Jumat - Sabtu",
+                            "opening": "08:30",
+                            "closing": "12:00"
+                        }
+                    ],
+                    "is_open_now": true,
+                    "active_closure": null,
+                    "today_schedule": {
+                        "day": "Senin - Kamis",
+                        "opening": "08:30",
+                        "closing": "15:00"
+                    }
+                },
+                {
+                    "type": "mobile",
+                    "id_sub_branch": "523d8226-d51c-4138-bf37-287c9dd40b7d",
+                    "name_sub_branch": "Samsat Keliling 02 Pidie",
+                    "schedule": [
+                        {
+                            "day": "Senin",
+                            "address": "Jl. Medan - Banda Aceh, Kp. Jumpa, Kec. Glumpang Tiga, Kabupaten Pidie, Aceh 24161",
+                            "latitude": "5.2490562",
+                            "longitude": "96.0120840"
+                        },
+                        {
+                            "day": "Selasa dan Rabu",
+                            "address": "Ruqan Coffee, Depan Mesjid, Ps. Paloh, Kec. Padang Tiji, Kabupaten Pidie, Aceh 24172",
+                            "latitude": "5.3738199",
+                            "longitude": "95.8462910"
+                        },
+                        {
+                            "day": "Kamis, Jumat dan Sabtu",
+                            "address": "Jl. Lintas Sumatera, Baroh Bar. Yaman, Kec. Mutiara, Kabupaten Pidie, Aceh 24151",
+                            "latitude": "5.2841937",
+                            "longitude": "95.9749471"
+                        }
+                    ],
+                    "office_hours": [
+                        {
+                            "day": "Senin - Kamis",
+                            "opening": "08:30",
+                            "closing": "15:00"
+                        },
+                        {
+                            "day": "Jumat - Sabtu",
+                            "opening": "08:30",
+                            "closing": "12:00"
+                        }
+                    ],
+                    "is_open_now": true,
+                    "active_closure": null,
+                    "today_schedule": {
+                        "day": "Senin - Kamis",
+                        "opening": "08:30",
+                        "closing": "15:00"
+                    },
+                    "active_location_today": {
+                        "day": "Selasa dan Rabu",
+                        "address": "Ruqan Coffee, Depan Mesjid, Ps. Paloh, Kec. Padang Tiji, Kabupaten Pidie, Aceh 24172",
+                        "latitude": "5.3738199",
+                        "longitude": "95.8462910"
+                    }
+                }
+            ],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "47980fd9-6b1d-414f-a186-e49f50be40e5",
+            "name_branch": "UPTD PPA Wilayah VI Aceh Utara",
+            "name_samsat": "Samsat Aceh Utara",
+            "address": "Jalan Medan - Banda Aceh, Meunasah Tutong, Kec. Lhoksukon, Kabupaten Aceh Utara, Aceh 24386",
+            "latitude": "5.057702",
+            "longitude": "97.314117",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "54ee566f-96fc-4f67-8d4d-dccde656c95a",
+            "name_branch": "UPTD PPA WILAYAH VII ACEH TIMUR",
+            "name_samsat": "Samsat Aceh Timur",
+            "address": "Seuneubok Teungoh (Pr), Kec. Idi Rayeuk, Kabupaten Aceh Timur, Aceh",
+            "latitude": "4.927803",
+            "longitude": "97.791927",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "bda8158c-01a8-47b6-bd6e-ef97b2def913",
+            "name_branch": "UPTD PPA Wilayah XII Aceh Barat",
+            "name_samsat": "Samsat Aceh Barat",
+            "address": "Jalan Swadaya, Lorong Gleh Hatee, Meulaboh, Kabupaten Aceh Barat, Aceh",
+            "latitude": "4.148118",
+            "longitude": "96.129339",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [
+                {
+                    "type": "static",
+                    "id_sub_branch": "e6d2586e-319c-4d6c-bea5-4bc8f2dc34c9",
+                    "name_sub_branch": "Samsat MPP Aceh Barat",
+                    "address": "Jl. Nasional, Ujong Baroh, Kec. Johan Pahlawan, Kabupaten Aceh Barat, Aceh 23681",
+                    "latitude": "4.1465285",
+                    "longitude": "96.1298963",
+                    "office_hours": [
+                        {
+                            "day": "Senin - Kamis",
+                            "opening": "08:30",
+                            "closing": "15:00"
+                        },
+                        {
+                            "day": "Jumat - Sabtu",
+                            "opening": "08:30",
+                            "closing": "12:00"
+                        }
+                    ],
+                    "is_open_now": true,
+                    "active_closure": null,
+                    "today_schedule": {
+                        "day": "Senin - Kamis",
+                        "opening": "08:30",
+                        "closing": "15:00"
+                    }
+                }
+            ],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "b2e8a28f-45b9-430a-816a-914eff3be004",
+            "name_branch": "UPTD PPA Wilayah XV Aceh Selatan",
+            "name_samsat": "Samsat Aceh Selatan",
+            "address": "Jl. T. Ben Mahmud, Kelurahan Lhok Keutapang, Kecamatan Tapaktuan, Aceh Selatan",
+            "latitude": "3.263420",
+            "longitude": "97.169973",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "f7ab4c53-1232-4920-897b-c3c5fe16dd5d",
+            "name_branch": "UPTD PPA Wilayah XI Aceh Tengah",
+            "name_samsat": "Samsat Takengon",
+            "address": "Jln. Abdul Wahab, Lr. Uluh Kuning, Ds. Kute Lot, Kec. Kebayakan, Kab. Aceh Tengah",
+            "latitude": "4.038",
+            "longitude": "96.84204",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "033b0497-6bb1-4125-920e-b4244837bd8a",
+            "name_branch": "UPTD PPA Wilayah XXII Aceh Tenggara",
+            "name_samsat": "Samsat Aceh Tenggara",
+            "address": "Jln. Tusam No.1 Kutacane Kec. Babussalam Kab. Aceh Tenggara",
+            "latitude": "3.489598",
+            "longitude": "97.811009",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "ec10ce9b-38ef-42c8-8d74-84dc0f8daf24",
+            "name_branch": "UPTD PPA Wilayah XVII Kota Sabang",
+            "name_samsat": "Samsat Sabang",
+            "address": "Jln. Perdagangan Gp. Kuta Timur Kec. Sukakarya Sabang",
+            "latitude": "5.890193",
+            "longitude": "95.321926",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "3993ecf4-addd-4c5b-9233-8263b75e3025",
+            "name_branch": "UPTD PPA Wilayah IV Bireuen ",
+            "name_samsat": "Samsat Bireuen ",
+            "address": "Jln. Medan- Banda Aceh Desa Glumpang Payong Kecamatan Jeumpa Kabupaten Bireuen ",
+            "latitude": "5.2067307",
+            "longitude": "96.6685986",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [
+                {
+                    "type": "mobile",
+                    "id_sub_branch": "e5f599c3-3022-4654-89ef-2550e75283e6",
+                    "name_sub_branch": "Samsat Keliling 04 Bireuen",
+                    "schedule": [
+                        {
+                            "day": "Senin - Jumat",
+                            "address": "Meunasah Kota Bireuen, Jl. Yoesoef Bahroen, Bireun City, Kota Juang, Bireuen Regency, Aceh 24261",
+                            "latitude": "5.203833",
+                            "longitude": "96.704194"
+                        }
+                    ],
+                    "office_hours": [
+                        {
+                            "day": "Senin - Kamis",
+                            "opening": "08:30",
+                            "closing": "15:00"
+                        },
+                        {
+                            "day": "Jumat - Sabtu",
+                            "opening": "08:30",
+                            "closing": "12:00"
+                        }
+                    ],
+                    "is_open_now": true,
+                    "active_closure": null,
+                    "today_schedule": {
+                        "day": "Senin - Kamis",
+                        "opening": "08:30",
+                        "closing": "15:00"
+                    },
+                    "active_location_today": {
+                        "day": "Senin - Jumat",
+                        "address": "Meunasah Kota Bireuen, Jl. Yoesoef Bahroen, Bireun City, Kota Juang, Bireuen Regency, Aceh 24261",
+                        "latitude": "5.203833",
+                        "longitude": "96.704194"
+                    }
+                }
+            ],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "caf3bc9f-338b-40f6-853d-abb36c99dcf7",
+            "name_branch": "UPTD PPA Wilayah XXIII Simeulue",
+            "name_samsat": "Samsat Simeulue",
+            "address": "Jalan Tgk. Diujung Air Dingin, Kec. Simeulue Timur, Kabupaten Simeulue, Aceh 24782",
+            "latitude": "2.454862901378511",
+            "longitude": "96.37785311507552",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "5eb9bd47-a4ca-4d41-bdbe-8ef3e39d56fe",
+            "name_branch": "UPTD PPA Wilayah XX Aceh Singkil",
+            "name_samsat": "Samsat Aceh Singkil",
+            "address": "Jln. Utama No 17 Desa Pulo Sarok Kec. Singkil",
+            "latitude": "2.2847889",
+            "longitude": "97.7952581",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "81bf87b4-31a6-4d1c-93e1-9071bb4ad306",
+            "name_branch": "UPTD PPA Wilayah XIII Nagan Raya",
+            "name_samsat": "Samsat Nagan Raya",
+            "address": "Jl. Terminal Baru, Desa Ujong Patihah, Kec. Kuala, Kab. Nagan Raya.",
+            "latitude": "4.1169340",
+            "longitude": "96.3097066",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "0ada2a1f-13aa-40be-9f05-8aaa221c00f2",
+            "name_branch": "UPTD PPA Wilayah V Lhokseumawe",
+            "name_samsat": "Samsat Lhokseumawe",
+            "address": "Panggoi, Kec. Muara Dua, Kota Lhokseumawe, Aceh",
+            "latitude": "5.188458213320431",
+            "longitude": "97.12077509592717",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [
+                {
+                    "type": "mobile",
+                    "id_sub_branch": "68fa7954-afb0-4e64-bde5-4f0401def686",
+                    "name_sub_branch": "Samsat Jempol 02 Lhokseumawe",
+                    "closures": [
+                        {
+                            "date": "2026-09-29",
+                            "reason": "Server Maintenance",
+                            "is_closed": true
+                        }
+                    ],
+                    "schedule": [
+                        {
+                            "day": "Senin dan Jumat",
+                            "address": "Dokter Kopi, Jl. Cunda, Banda Sakti, Lhokseumawe",
+                            "latitude": "5.175585764896054",
+                            "longitude": "97.12579442992866"
+                        },
+                        {
+                            "day": "Selasa, Rabu dan Kamis",
+                            "address": "D'Royal Cofee Space, Jl. Pase, Mon Geudong, Kec. Banda Sakti, Kota Lhokseumawe, Aceh",
+                            "latitude": "5.176614244100757",
+                            "longitude": "97.13987808650796"
+                        }
+                    ],
+                    "office_hours": [
+                        {
+                            "day": "Senin - Kamis",
+                            "opening": "08:30",
+                            "closing": "15:00"
+                        },
+                        {
+                            "day": "Jumat - Sabtu",
+                            "opening": "08:30",
+                            "closing": "12:00"
+                        }
+                    ],
+                    "is_open_now": false,
+                    "active_closure": {
+                        "date": "2026-09-29",
+                        "reason": "Server Maintenance",
+                        "is_closed": true
+                    },
+                    "today_schedule": null,
+                    "active_location_today": null
+                }
+            ],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "5a44b5d3-5b75-4efa-9c58-9bb2e824bc33",
+            "name_branch": "UPTD PPA Wilayah IX Aceh Tamiang",
+            "name_samsat": "Samsat Aceh Tamiang ",
+            "address": "Jln. Ir. H. Juanda, Gampong Bundar, Kecamatan Karang Baru, Kabupaten Aceh Tamiang ",
+            "latitude": "4.298632",
+            "longitude": "98.046606",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "a7df561b-37bd-4781-b8b4-efb6ea110caa",
+            "name_branch": "UPTD PPA Wilayah VIII Langsa",
+            "name_samsat": "Samsat Kota Langsa",
+            "address": "Jl. Prof. A. Majid Ibrahim, Gampong Matang Seulimeng, Kecamatan Langsa Barat, Kota Langsa, Aceh 24355",
+            "latitude": "4.471676",
+            "longitude": "97.962883",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "9b4bd7ff-6d54-4689-8768-49e72f55fa93",
+            "name_branch": "UPTD PPA Wilayah XVIII Aceh Jaya",
+            "name_samsat": "Samsat Aceh Jaya",
+            "address": "Jl. Pasar Baru No.14-15 Pertokoan Pemda Desa Dayah Baro Kecamatan Krueng Sabee Kabupaten Aceh Jaya",
+            "latitude": "4.636941",
+            "longitude": "95.584297",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "76fcfc97-3791-4d98-b798-9e9b797f88e4",
+            "name_branch": "UPTD PPA Wilayah XIV Aceh Barat Daya",
+            "name_samsat": "Samsat Aceh Barat Daya",
+            "address": "Jl. Letkol BB Djalal No.89, Padang Baru, Susoh, Kabupaten Aceh Barat Daya, Aceh 23765",
+            "latitude": "3.7296019",
+            "longitude": "96.8076309",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "7f1a3238-6921-4a84-87f9-5dcb43d6148f",
+            "name_branch": "UPTD PPA Wilayah XXI Gayo Lues",
+            "name_samsat": "Samsat Gayo Lues",
+            "address": "Jl. MZ Abidin No. 1, Desa Bustanussalam Kecamatan Blangkejeren, Kabupaten Gayo Lues",
+            "latitude": "4.001757563500852",
+            "longitude": "97.33657203753897",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "72d35f27-e130-4e49-8ca1-39b0cec8e56d",
+            "name_branch": "UPTD PPA Wilayah X Bener Meriah",
+            "name_samsat": "Samsat Bener Meriah",
+            "address": "Jalan Bandara Rembele – Pante Raya, Kecamatan Wih Pesam, Kabupaten Bener Meriah, Aceh",
+            "latitude": "4.726278062770755",
+            "longitude": "96.8234131712457",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "e1e926cd-09b4-4b3f-9721-661b9139ffd4",
+            "name_branch": "UPTD PPA Wilayah XVI Pidie Jaya ",
+            "name_samsat": "Samsat Pidie Jaya ",
+            "address": "Jln. Banda Aceh - Medan, Bunot Kec. Meureudu Kab. Pidie Jaya",
+            "latitude": "5.236505",
+            "longitude": "96.238595",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        },
+        {
+            "id_branch": "a0376e52-1f5c-4855-accb-d5442f342616",
+            "name_branch": "UPTD PPA Wilayah XIX Subulussalam",
+            "name_samsat": "Samsat Subulussalam",
+            "address": "Jalan Teuku Umar No. 85 Desa Penanggalan, Kec. Penanggalan, Kota Subulussalam, Aceh 24782",
+            "latitude": "2.633844",
+            "longitude": "98.016433",
+            "office_hours": [
+                {
+                    "day": "Senin - Kamis",
+                    "opening": "08:30",
+                    "closing": "15:00"
+                },
+                {
+                    "day": "Jumat - Sabtu",
+                    "opening": "08:30",
+                    "closing": "12:00"
+                }
+            ],
+            "sub_branch": [],
+            "is_open_now": true,
+            "active_closure": null,
+            "today_schedule": {
+                "day": "Senin - Kamis",
+                "opening": "08:30",
+                "closing": "15:00"
+            },
+            "metadata": {
+                "updated_at": "2026-09-29T02:17:32.543Z"
+            }
+        }
+    ]
+}

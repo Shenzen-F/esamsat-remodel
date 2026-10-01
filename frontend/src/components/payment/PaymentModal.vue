@@ -29,7 +29,6 @@ const emit = defineEmits(['close', 'payment-success'])
 const eSamsatStore = useESamsatStore()
 
 const copied = ref(false)
-const copiedSse = ref(false)
 const isSuccess = ref(false)
 const kodeBayar = ref('')
 const sseSubscribeId = ref('')

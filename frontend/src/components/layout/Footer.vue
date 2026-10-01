@@ -32,28 +32,28 @@ import jasaRaharjaLogo from '../../assets/Jasa Raharja Logo - Colored - zonalogo
         </div>
       </div>
 
-      <div class="footer-partners">
-        <span class="partners-title">DIDUKUNG OLEH</span>
-        <div class="partner-badges">
-          <img
-            :src="polriLogo"
-            alt="Kepolisian Negara Republik Indonesia"
-            title="Kepolisian Negara Republik Indonesia (Polri)"
-          />
-          <img
-            :src="pancacitaLogo"
-            alt="Pemerintah Aceh - Pancacita"
-            title="Pemerintah Provinsi Aceh"
-          />
-          <img
-            :src="jasaRaharjaLogo"
-            alt="PT Jasa Raharja"
-            title="PT Jasa Raharja"
-          />
+      <div style="flex: 1; display: flex; justify-content: flex-end;">
+        <div class="footer-partners">
+          <span class="partners-title">DIDUKUNG OLEH</span>
+          <div class="partner-badges">
+            <img
+              :src="polriLogo"
+              alt="Kepolisian Negara Republik Indonesia"
+              title="Kepolisian Negara Republik Indonesia (Polri)"
+            />
+            <img
+              :src="pancacitaLogo"
+              alt="Pemerintah Aceh - Pancacita"
+              title="Pemerintah Provinsi Aceh"
+            />
+            <img
+              :src="jasaRaharjaLogo"
+              alt="PT Jasa Raharja"
+              title="PT Jasa Raharja"
+            />
+          </div>
         </div>
       </div>
-
-      <div style="flex: 1;"></div>
     </div>
     <div class="footer-copy-bar">
       © {{ new Date().getFullYear() }} Tim IT e-Samsat Aceh — Badan Pengelolaan Keuangan Aceh
