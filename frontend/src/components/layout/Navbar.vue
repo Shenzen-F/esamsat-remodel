@@ -26,14 +26,25 @@ const emit = defineEmits(['set-tab', 'go-to-landing'])
 
 <template>
   <nav class="navbar">
-    <div class="nav-brand" @click="emit('go-to-landing')">
-      <div class="brand-badge" style="padding: 0.2rem; width: 36px; height: 36px">
-        <img :src="sekretariatLogo" alt="Sekretariat Samsat" style="width: 100%; height: 100%; object-fit: contain" />
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <button 
+        @click="emit('go-to-landing')" 
+        title="Kembali"
+        style="background: transparent; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 50%; transition: background 0.2s;"
+        onmouseover="this.style.background='rgba(255,255,255,0.1)'"
+        onmouseout="this.style.background='transparent'"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="nav-brand">
+        <div class="brand-badge" style="padding: 0.2rem; width: 36px; height: 36px">
+          <img :src="sekretariatLogo" alt="Sekretariat Samsat" style="width: 100%; height: 100%; object-fit: contain" />
+        </div>
+        <div class="brand-badge" style="padding: 0.2rem; width: 36px; height: 36px">
+          <img :src="esamsatLogo" alt="e-Samsat Aceh" style="width: 100%; height: 100%; object-fit: contain" />
+        </div>
+        <span>e-Samsat Aceh</span>
       </div>
-      <div class="brand-badge" style="padding: 0.2rem; width: 36px; height: 36px">
-        <img :src="esamsatLogo" alt="e-Samsat Aceh" style="width: 100%; height: 100%; object-fit: contain" />
-      </div>
-      <span>e-Samsat Aceh</span>
     </div>
 
     <ul v-if="!hideMenu" class="nav-links">

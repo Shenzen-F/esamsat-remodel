@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watch, nextTick } from 'vue'
+import { ref, reactive, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import Navbar from './components/layout/Navbar.vue'
 import LandingPage from './components/pages/LandingPage.vue'
 import HeroSearch from './components/tax/HeroSearch.vue'
@@ -16,6 +16,41 @@ const eSamsatStore = useESamsatStore()
 const showLanding = ref(true)
 const activeTab = ref('beranda')
 const resultsRef = ref(null)
+
+const handlePopState = (e) => {
+  const state = e.state
+  if (state && state.page === 'landing') {
+    showLanding.value = true
+  } else if (state && state.page === 'app') {
+    showLanding.value = false
+  } else {
+    // Default fallback
+    showLanding.value = true
+  }
+}
+
+const enterApp = () => {
+  showLanding.value = false
+  window.history.pushState({ page: 'app' }, '')
+}
+
+const goLanding = () => {
+  showLanding.value = true
+  window.history.pushState({ page: 'landing' }, '')
+}
+
+onMounted(() => {
+  if (showLanding.value) {
+    window.history.replaceState({ page: 'landing' }, '')
+  } else {
+    window.history.replaceState({ page: 'app' }, '')
+  }
+  window.addEventListener('popstate', handlePopState)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('popstate', handlePopState)
+})
 
 const formData = reactive({
   nik: '',
@@ -478,14 +513,14 @@ const onBackToHome = () => {
 <template>
   <!-- Transition antara LandingPage dan App utama -->
   <Transition name="page-fade" mode="out-in">
-    <LandingPage v-if="showLanding" key="landing" @enter-app="showLanding = false" />
+    <LandingPage v-if="showLanding" key="landing" @enter-app="enterApp" />
 
     <div v-else key="main" class="app-container">
       <Navbar 
         :active-tab="activeTab" 
         :hide-menu="!!paymentSuccessData"
         @set-tab="activeTab = $event" 
-        @go-to-landing="showLanding = true" 
+        @go-to-landing="goLanding" 
       />
 
       <main class="main-content">

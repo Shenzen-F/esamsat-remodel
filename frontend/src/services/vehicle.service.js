@@ -91,11 +91,11 @@ const searchReal = async ({ nik, nopolAngka, nopolSeri, noRangkaLast5 }) => {
       vehicle.canPayOnline = false
       vehicle.status = 'VALIDASI'
       vehicle.deskripsi = responseBody.data?.deskripsi || 'Validasi Pembayaran'
-      return { 
-        status: 'found', 
-        vehicle, 
-        totalPajak: calculateTotalPajak(vehicle.pajak), 
-        message: responseBody.data?.deskripsi || 'Validasi Pembayaran' 
+      return {
+        status: 'found',
+        vehicle,
+        totalPajak: calculateTotalPajak(vehicle.pajak),
+        message: responseBody.data?.deskripsi || 'Validasi Pembayaran'
       }
     }
 
